@@ -1,0 +1,27 @@
+import os
+
+def write_index_html():
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    index = 1
+    with open(os.path.join(script_dir, 'index.html'), 'w') as f:
+        f.write('<!DOCTYPE html>\n')
+        f.write('<html>\n')
+        f.write('<head>\n')
+        f.write('<style>\n')
+        f.write('body {font-family: Arial, sans-serif;}\n')
+        f.write('h1 {color: #333;}\n')
+        f.write('p {color: #666;}\n')
+        f.write('</style>\n')
+        f.write('</head>\n')
+        f.write('<body>\n')
+        f.write('<h1>Video Storage</h1>\n')
+        for dirpath, dirnames, filenames in os.walk(script_dir):
+            m3u8_files = [f for f in filenames if f.endswith('.m3u8')]
+            for m3u8_file in sorted(m3u8_files):
+                relative_path = os.path.join(os.path.relpath(dirpath, script_dir), m3u8_file)
+                f.write('<p>{}. <a href="/{}">{}</a></p>\n'.format(index, relative_path, relative_path))
+                index += 1
+        f.write('</body>\n')
+        f.write('</html>\n')
+
+write_index_html()
