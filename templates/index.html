@@ -8,6 +8,16 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.js"></script>
     <style>
+        body {
+            transition: background-color 0.3s ease;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
         .announcement-bar {
             background-color: #333;
             color: #fff;
@@ -15,33 +25,129 @@
             text-align: center;
         }
         .navbar {
-            background-color: #333;
+            background-color: #222;
             overflow: hidden;
             box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+            padding: 10px;
         }
         .video-list {
             display: flex;
             flex-wrap: wrap;
-            padding: 20px 0;
+            padding: 20px;
+            flex: 1;
+            justify-content: center;
         }
         .video-container {
             flex: 0 0 auto;
             max-width: 320px;
-            margin: 10px;
+            margin: 20px;
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
             transition: transform .3s;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #fff;
+            color: #333;
+        }
+        .dark-mode .video-container {
+            background-color: #444;
+            color: #fff;
+        }
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
+            border-radius: 5px;
+            margin-left: 20px;
+        }
+        .dark-mode .sidebar {
+            background-color: #444;
+            color: #fff;
+        }
+        .main-content {
+            display: flex;
+            padding: 20px;
         }
         .video-container:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
             box-shadow: 0 8px 16px 0 rgba(0, 0, 0, .2), 0 12px 40px 0 rgba(0, 0, 0, .19);
         }
         .video-title {
             text-align: center;
-            margin-bottom: 10px;
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: inherit;
+        }
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .dark-mode .dark-mode-toggle {
+            background-color: #fff;
+            color: #333;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            display: none;
+        }
+        .search-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .search-input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .search-btn {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        .dark-mode .search-input {
+            background-color: #444;
+            color: #fff;
+            border-color: #666;
+        }
+        .dark-mode .search-btn {
+            background-color: #666;
         }
         @media (max-width: 767px) {
             .video-container {
                 max-width: 100%;
+            }
+            .main-content {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 20px;
             }
         }
     </style>
@@ -51,45 +157,64 @@
         这里是用来归档的视频站
     </div>
     <div class="navbar">
-    </div>
-    <div>
-        <input type="text" id="search-input" placeholder="搜索视频标题" />
-        <button id="search-btn">搜索</button>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="搜索视频标题" class="search-input" />
+            <button id="search-btn" class="search-btn">搜索</button>
+        </div>
     </div>
     <div id="search-results"></div>
-    <div class="video-list">
-        {% for file in files %}
-        {% if file.type == 'video' %}
-        <div class="video-container" data-title="{{ file.title|lower }}" data-title-original="{{ file.title }}">
-            <h2 class="video-title">{{ file.title }}</h2>
-            <div class="dplayer-container">
-                <div id="dplayer-{{ loop.index0 }}"></div>
-                <script>
-                    var dp{{ loop.index0 }} = new DPlayer({
-                        container: document.getElementById("dplayer-{{ loop.index0 }}"),
-                        video: {
-                            url: "{{ file.path }}",
-                            type: "{{ mimetypes.guess_type(file.path)[0] }}"
-                        },
-                        preload: 'none'
-                    });
-                </script>
+    <div class="main-content">
+        <div class="video-list">
+            {% for file in files %}
+            {% if file.type == 'video' %}
+            <div class="video-container" data-title="{{ file.title|lower }}" data-title-original="{{ file.title }}">
+                <h2 class="video-title">{{ file.title }}</h2>
+                <div class="dplayer-container">
+                    <div id="dplayer-{{ loop.index0 }}"></div>
+                    <script>
+                        var dp{{ loop.index0 }} = new DPlayer({
+                            container: document.getElementById("dplayer-{{ loop.index0 }}"),
+                            video: {
+                                url: "{{ file.path }}",
+                                type: "{{ mimetypes.guess_type(file.path)[0] }}"
+                            },
+                            preload: 'none'
+                        });
+                    </script>
+                </div>
+                <p>Size: {{ file.size }} bytes | Modified: {{ file.modified }}</p>
             </div>
-            <p>Size: {{ file.size }} bytes | Modified: {{ file.modified }}</p>
+            {% endif %}
+            {% endfor %}
         </div>
-        {% endif %}
-        {% endfor %}
+        <div class="sidebar">
+            <h3>侧边栏标题</h3>
+            <p>侧边栏内容</p>
+            <h4>UTC 时间</h4>
+            <p id="utc-time"></p>
+            <h4>当前播放视频</h4>
+            <p id="current-video-title"></p>
+            <h4>视频计数</h4>
+            <p id="video-count"></p>
+        </div>
     </div>
+    <button class="dark-mode-toggle">切换暗夜模式</button>
+    <button class="back-to-top">返回顶部</button>
     <script>
         $(function() {
             const searchInput = $('#search-input');
             const searchBtn = $('#search-btn');
             const searchResults = $('#search-results');
             const videoContainers = $('.video-container');
+            const currentVideoTitle = $('#current-video-title');
+            const videoCount = $('#video-count');
+            const darkModeToggle = $('.dark-mode-toggle');
+            const backToTop = $('.back-to-top');
 
             function searchVideos() {
                 const searchTerm = searchInput.val().trim().toLowerCase();
                 searchResults.empty();
+                let visibleCount = 0;
                 videoContainers.each(function() {
                     const container = $(this);
                     const title = container.data('title');
@@ -98,14 +223,54 @@
                         const clonedContainer = container.clone();
                         clonedContainer.find('.video-title').text(originalTitle);
                         searchResults.append(clonedContainer);
+                        container.show();
+                        visibleCount++;
                     } else {
                         container.hide();
                     }
                 });
+                videoCount.text(`显示 ${visibleCount} / ${videoContainers.length} 个视频`);
             }
 
             searchBtn.on('click', searchVideos);
             searchInput.on('input', searchVideos);
+
+            // 更新 UTC 时间
+            function updateUTCTime() {
+                const now = new Date();
+                const utcString = now.toUTCString();
+                $('#utc-time').text(utcString);
+            }
+
+            // 每秒更新一次 UTC 时间
+            setInterval(updateUTCTime, 1000);
+
+            // 显示当前播放视频的标题
+            videoContainers.on('click', function() {
+                const title = $(this).data('title-original');
+                currentVideoTitle.text(title);
+            });
+
+            // 初始化视频计数
+            videoCount.text(`显示 ${videoContainers.length} / ${videoContainers.length} 个视频`);
+
+            // 暗夜模式切换
+            darkModeToggle.on('click', function() {
+                $('body').toggleClass('dark-mode');
+            });
+
+            // 返回顶部
+            $(window).on('scroll', function() {
+                if ($(this).scrollTop() > 200) {
+                    backToTop.fadeIn();
+                } else {
+                    backToTop.fadeOut();
+                }
+            });
+
+            backToTop.on('click', function() {
+                $('html, body').animate({ scrollTop: 0 }, 800);
+            });
         });
     </script>
 </body>
