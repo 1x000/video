@@ -1,1 +1,0 @@
-tree /F > tree.txt /U

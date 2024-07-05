@@ -1,35 +1,43 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
+
 <head>
     <title>雷锋视频归档</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.js"></script>
     <style>
+        /* 保持原有的样式不变 */
         body {
             transition: background-color 0.3s ease;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-image: url('https://cdn.xpdbk.com/gh/1x000/zdzy/tp/246223.jpg');
+            background-size: cover;
+            background-attachment: fixed;
         }
+
         .dark-mode {
             background-color: #333;
             color: #fff;
         }
+
         .announcement-bar {
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.7);
             color: #fff;
             padding: 10px;
             text-align: center;
         }
+
         .navbar {
-            background-color: #222;
+            background-color: rgba(34, 34, 34, 0.7);
             overflow: hidden;
             box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
             padding: 10px;
         }
+
         .video-list {
             display: flex;
             flex-wrap: wrap;
@@ -37,6 +45,7 @@
             flex: 1;
             justify-content: center;
         }
+
         .video-container {
             flex: 0 0 auto;
             max-width: 320px;
@@ -45,33 +54,68 @@
             transition: transform .3s;
             border-radius: 5px;
             overflow: hidden;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.7);
             color: #333;
         }
+
         .dark-mode .video-container {
-            background-color: #444;
+            background-color: rgba(68, 68, 68, 0.7);
             color: #fff;
         }
+
         .sidebar {
             width: 250px;
             padding: 20px;
-            background-color: #f1f1f1;
+            background-color: rgba(241, 241, 241, 0.7);
             box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
             border-radius: 5px;
             margin-left: 20px;
+            position: sticky;
+            top: 20px;
+            /* 距离顶部的距离 */
+            max-height: calc(100vh - 40px);
+            /* 最大高度为视口高度减去上下边距 */
+            overflow-y: auto;
+            /* 如果内容过多，允许滚动 */
         }
+
         .dark-mode .sidebar {
-            background-color: #444;
+            background-color: rgba(68, 68, 68, 0.7);
             color: #fff;
         }
+
+        /* 为滚动条添加一些样式（可选） */
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(241, 241, 241, 0.3);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(136, 136, 136, 0.5);
+            border-radius: 5px;
+        }
+
+        .dark-mode .sidebar::-webkit-scrollbar-track {
+            background: rgba(68, 68, 68, 0.3);
+        }
+
+        .dark-mode .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(170, 170, 170, 0.5);
+        }
+
         .main-content {
             display: flex;
             padding: 20px;
         }
+
         .video-container:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 16px 0 rgba(0, 0, 0, .2), 0 12px 40px 0 rgba(0, 0, 0, .19);
         }
+
         .video-title {
             text-align: center;
             margin: 10px 0;
@@ -79,6 +123,7 @@
             font-weight: bold;
             color: inherit;
         }
+
         .dark-mode-toggle {
             position: fixed;
             top: 20px;
@@ -91,37 +136,58 @@
             border-radius: 5px;
             font-size: 16px;
         }
+
         .dark-mode .dark-mode-toggle {
             background-color: #fff;
             color: #333;
         }
+
         .back-to-top {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.7);
             color: #fff;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
             border-radius: 5px;
             font-size: 16px;
-            display: none;
+            transition: opacity 0.3s, visibility 0.3s;
+            opacity: 0;
+            visibility: hidden;
         }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dark-mode .back-to-top {
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #333;
+        }
+
         .search-container {
             text-align: center;
             margin: 20px 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
         }
+
         .search-input {
             padding: 10px;
             width: 300px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.7);
         }
+
         .search-btn {
             padding: 10px 20px;
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.7);
             color: #fff;
             border: none;
             cursor: pointer;
@@ -129,21 +195,26 @@
             font-size: 16px;
             margin-left: 10px;
         }
+
         .dark-mode .search-input {
-            background-color: #444;
+            background-color: rgba(68, 68, 68, 0.7);
             color: #fff;
             border-color: #666;
         }
+
         .dark-mode .search-btn {
-            background-color: #666;
+            background-color: rgba(102, 102, 102, 0.7);
         }
+
         @media (max-width: 767px) {
             .video-container {
                 max-width: 100%;
             }
+
             .main-content {
                 flex-direction: column;
             }
+
             .sidebar {
                 width: 100%;
                 margin-left: 0;
@@ -152,126 +223,114 @@
         }
     </style>
 </head>
+
 <body>
-    <div class="announcement-bar">
-        这里是用来归档的视频站
-    </div>
-    <div class="navbar">
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="搜索视频标题" class="search-input" />
-            <button id="search-btn" class="search-btn">搜索</button>
+    <div id="app" :class="{ 'dark-mode': isDarkMode }">
+        <div class="announcement-bar">
+            这里是用来归档的视频站
         </div>
-    </div>
-    <div id="search-results"></div>
-    <div class="main-content">
-        <div class="video-list">
-            {% for file in files %}
-            {% if file.type == 'video' %}
-            <div class="video-container" data-title="{{ file.title|lower }}" data-title-original="{{ file.title }}">
-                <h2 class="video-title">{{ file.title }}</h2>
-                <div class="dplayer-container">
-                    <div id="dplayer-{{ loop.index0 }}"></div>
-                    <script>
-                        var dp{{ loop.index0 }} = new DPlayer({
-                            container: document.getElementById("dplayer-{{ loop.index0 }}"),
-                            video: {
-                                url: "{{ file.path }}",
-                                type: "{{ mimetypes.guess_type(file.path)[0] }}"
-                            },
-                            preload: 'none'
-                        });
-                    </script>
-                </div>
-                <p>Size: {{ file.size }} bytes | Modified: {{ file.modified }}</p>
+        <div class="navbar">
+            <div class="search-container">
+                <input type="text" v-model="searchTerm" placeholder="搜索视频标题" class="search-input"
+                    @input="searchVideos" />
+                <button @click="searchVideos" class="search-btn">搜索</button>
             </div>
-            {% endif %}
-            {% endfor %}
         </div>
-        <div class="sidebar">
-            <h3>侧边栏标题</h3>
-            <p>侧边栏内容</p>
-            <h4>UTC 时间</h4>
-            <p id="utc-time"></p>
-            <h4>当前播放视频</h4>
-            <p id="current-video-title"></p>
-            <h4>视频计数</h4>
-            <p id="video-count"></p>
+        <div id="search-results"></div>
+        <div class="main-content">
+            <div class="video-list">
+                <div v-for="(file, index) in filteredFiles" :key="index" class="video-container"
+                    @click="setCurrentVideo(file.title)">
+                    <h2 class="video-title">{% raw %}{{ file.title }}{% endraw %}</h2>
+                    <div class="dplayer-container">
+                        <div :id="'dplayer-' + index"></div>
+                    </div>
+                    <p>Size: {% raw %}{{ file.size }}{% endraw %} bytes | Modified: {% raw %}{{ file.modified }}{%
+                        endraw %}</p>
+                </div>
+            </div>
+            <div class="sidebar">
+                <h3>这是LEl_FENG的B站视频备份站</h3>
+                <p>有兴趣可以看看哦~</p>
+                <h4>UTC 时间</h4>
+                <p>{% raw %}{{ utcTime }}{% endraw %}</p>
+                <h4>当前播放视频</h4>
+                <p>{% raw %}{{ currentVideoTitle }}{% endraw %}</p>
+                <h4>视频计数</h4>
+                <p>显示 {% raw %}{{ filteredFiles.length }}{% endraw %} / {% raw %}{{ files.length }}{% endraw %} 个视频</p>
+            </div>
         </div>
+        <button @click="toggleDarkMode" class="dark-mode-toggle">切换暗夜模式</button>
+        <button @click="scrollToTop" class="back-to-top" :class="{ 'show': showBackToTop }">返回顶部</button>
     </div>
-    <button class="dark-mode-toggle">切换暗夜模式</button>
-    <button class="back-to-top">返回顶部</button>
+
     <script>
-        $(function() {
-            const searchInput = $('#search-input');
-            const searchBtn = $('#search-btn');
-            const searchResults = $('#search-results');
-            const videoContainers = $('.video-container');
-            const currentVideoTitle = $('#current-video-title');
-            const videoCount = $('#video-count');
-            const darkModeToggle = $('.dark-mode-toggle');
-            const backToTop = $('.back-to-top');
+        window.videoFiles = {{ video_files_json | safe }};
 
-            function searchVideos() {
-                const searchTerm = searchInput.val().trim().toLowerCase();
-                searchResults.empty();
-                let visibleCount = 0;
-                videoContainers.each(function() {
-                    const container = $(this);
-                    const title = container.data('title');
-                    const originalTitle = container.data('title-original');
-                    if (title.includes(searchTerm)) {
-                        const clonedContainer = container.clone();
-                        clonedContainer.find('.video-title').text(originalTitle);
-                        searchResults.append(clonedContainer);
-                        container.show();
-                        visibleCount++;
-                    } else {
-                        container.hide();
-                    }
-                });
-                videoCount.text(`显示 ${visibleCount} / ${videoContainers.length} 个视频`);
-            }
-
-            searchBtn.on('click', searchVideos);
-            searchInput.on('input', searchVideos);
-
-            // 更新 UTC 时间
-            function updateUTCTime() {
-                const now = new Date();
-                const utcString = now.toUTCString();
-                $('#utc-time').text(utcString);
-            }
-
-            // 每秒更新一次 UTC 时间
-            setInterval(updateUTCTime, 1000);
-
-            // 显示当前播放视频的标题
-            videoContainers.on('click', function() {
-                const title = $(this).data('title-original');
-                currentVideoTitle.text(title);
-            });
-
-            // 初始化视频计数
-            videoCount.text(`显示 ${videoContainers.length} / ${videoContainers.length} 个视频`);
-
-            // 暗夜模式切换
-            darkModeToggle.on('click', function() {
-                $('body').toggleClass('dark-mode');
-            });
-
-            // 返回顶部
-            $(window).on('scroll', function() {
-                if ($(this).scrollTop() > 200) {
-                    backToTop.fadeIn();
-                } else {
-                    backToTop.fadeOut();
+        new Vue({
+            el: '#app',
+            data: {
+                files: window.videoFiles,
+                searchTerm: '',
+                isDarkMode: false,
+                utcTime: '',
+                currentVideoTitle: '',
+                showBackToTop: false,
+            },
+            computed: {
+                filteredFiles() {
+                    const searchTerm = this.searchTerm.trim().toLowerCase();
+                    return this.files.filter(file => file.title.toLowerCase().includes(searchTerm));
                 }
-            });
+            },
+            methods: {
+                searchVideos() {
+                    // 搜索功能已通过计算属性实现
+                },
+                toggleDarkMode() {
+                    this.isDarkMode = !this.isDarkMode;
+                },
+                updateUTCTime() {
+                    const now = new Date();
+                    this.utcTime = now.toUTCString();
+                },
+                scrollToTop() {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+                handleScroll() {
+                    this.showBackToTop = window.pageYOffset > 300;
+                },
+                initDPlayers() {
+                    this.$nextTick(() => {
+                        this.files.forEach((file, index) => {
+                            new DPlayer({
+                                container: document.getElementById(`dplayer-${index}`),
+                                video: {
+                                    url: file.path,
+                                    type: file.mimeType
+                                },
+                                preload: 'none'
+                            });
+                        });
+                    });
+                },
+                setCurrentVideo(title) {
+                    this.currentVideoTitle = title;
+                }
+            },
+            mounted() {
+                this.updateUTCTime();
+                setInterval(this.updateUTCTime, 1000);
 
-            backToTop.on('click', function() {
-                $('html, body').animate({ scrollTop: 0 }, 800);
-            });
+                window.addEventListener('scroll', this.handleScroll);
+
+                this.initDPlayers();
+            },
+            beforeDestroy() {
+                window.removeEventListener('scroll', this.handleScroll);
+            }
         });
     </script>
 </body>
+
 </html>

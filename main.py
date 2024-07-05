@@ -1,13 +1,14 @@
 import os
 import mimetypes
 from datetime import datetime
+import json
 import ffmpeg
 from jinja2 import Environment, FileSystemLoader
 from htmlmin import minify
 
 # 配置项
-DIRECTORY = './'
-FILE_TYPES = ['video', 'image', 'document']
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+UP_DIR = os.path.join(SCRIPT_DIR, 'UP')
 OUTPUT_FILE = 'index.html'
 
 # Jinja2模板加载器
@@ -31,26 +32,26 @@ def generate_file_info_list(directory):
         for file in files_in_dir:
             file_path = os.path.join(root, file)
             file_mime = mimetypes.guess_type(file_path)[0]
-            if file_mime:
-                for file_type in FILE_TYPES:
-                    if file_mime.startswith(file_type) or (file_type == 'video' and file_path.endswith('.m3u8')):
-                        file_size = os.path.getsize(file_path)
-                        file_mtime = os.path.getmtime(file_path)
-                        file_mtime_str = datetime.fromtimestamp(file_mtime).strftime('%Y-%m-%d %H:%M:%S')
-                        file_info = {
-                            'path': file_path,
-                            'size': file_size,
-                            'modified': file_mtime_str,
-                            'type': file_type
-                        }
-                        if file_type == 'video':
-                            file_info['title'] = extract_video_title(file_path)
-                        files.append(file_info)
+            if file_mime and file_mime.startswith('video'):
+                relative_path = os.path.relpath(file_path, SCRIPT_DIR)
+                file_size = os.path.getsize(file_path)
+                file_mtime = os.path.getmtime(file_path)
+                file_mtime_str = datetime.fromtimestamp(file_mtime).strftime('%Y-%m-%d %H:%M:%S')
+                file_info = {
+                    'path': relative_path.replace('\\', '/'),  # 使用正斜杠作为路径分隔符
+                    'size': file_size,
+                    'modified': file_mtime_str,
+                    'type': 'video',
+                    'mimeType': file_mime,
+                    'title': extract_video_title(file_path)
+                }
+                files.append(file_info)
     return files
 
 # 渲染模板并混淆HTML和JavaScript
 def render_template(files):
-    html = template.render(files=files, mimetypes=mimetypes)
+    video_files_json = json.dumps(files)
+    html = template.render(video_files_json=video_files_json)
     minified_html = minify(html, remove_comments=True, remove_empty_space=True, remove_all_empty_space=True)
     return minified_html
 
@@ -61,7 +62,7 @@ def write_html_file(html, output_file):
 
 # 主函数
 def main():
-    files = generate_file_info_list(DIRECTORY)
+    files = generate_file_info_list(UP_DIR)
     html = render_template(files)
     write_html_file(html, OUTPUT_FILE)
 

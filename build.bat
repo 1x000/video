@@ -1,1 +1,0 @@
-python -m nuitka --mingw64 --standalone --output-dir=out --show-progress --onefile main.py
