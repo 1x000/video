@@ -3,10 +3,12 @@
   <head>
     <title>雷锋视频归档</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 引入 DPlayer 的样式文件 -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css"
     />
+    <!-- 引入 Vue.js 和 DPlayer 的 JavaScript 文件 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.js"></script>
     <style>
@@ -21,11 +23,13 @@
         background-attachment: fixed;
       }
 
+      /* 定义暗模式下的样式 */
       .dark-mode {
         background-color: #333;
         color: #fff;
       }
 
+      /* 公告栏样式 */
       .announcement-bar {
         background-color: rgba(51, 51, 51, 0.7);
         color: #fff;
@@ -33,6 +37,7 @@
         text-align: center;
       }
 
+      /* 导航栏样式 */
       .navbar {
         background-color: rgba(34, 34, 34, 0.7);
         overflow: hidden;
@@ -40,6 +45,7 @@
         padding: 10px;
       }
 
+      /* 视频列表样式 */
       .video-list {
         display: flex;
         flex-wrap: wrap;
@@ -48,6 +54,7 @@
         justify-content: center;
       }
 
+      /* 视频容器样式 */
       .video-container {
         flex: 0 0 auto;
         max-width: 320px;
@@ -61,11 +68,13 @@
         color: #333;
       }
 
+      /* 暗模式下的视频容器样式 */
       .dark-mode .video-container {
         background-color: rgba(68, 68, 68, 0.7);
         color: #fff;
       }
 
+      /* 侧边栏样式 */
       .sidebar {
         width: 250px;
         padding: 20px;
@@ -82,6 +91,7 @@
         /* 如果内容过多，允许滚动 */
       }
 
+      /* 暗模式下的侧边栏样式 */
       .dark-mode .sidebar {
         background-color: rgba(68, 68, 68, 0.7);
         color: #fff;
@@ -101,6 +111,7 @@
         border-radius: 5px;
       }
 
+      /* 暗模式下滚动条的样式 */
       .dark-mode .sidebar::-webkit-scrollbar-track {
         background: rgba(68, 68, 68, 0.3);
       }
@@ -109,17 +120,20 @@
         background: rgba(170, 170, 170, 0.5);
       }
 
+      /* 主内容区域样式 */
       .main-content {
         display: flex;
         padding: 20px;
       }
 
+      /* 视频容器悬停样式 */
       .video-container:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
           0 12px 40px 0 rgba(0, 0, 0, 0.19);
       }
 
+      /* 视频标题样式 */
       .video-title {
         text-align: center;
         margin: 10px 0;
@@ -128,6 +142,7 @@
         color: inherit;
       }
 
+      /* 切换暗/亮模式按钮样式 */
       .dark-mode-toggle {
         position: fixed;
         top: 20px;
@@ -141,11 +156,13 @@
         font-size: 16px;
       }
 
+      /* 暗模式下的切换按钮样式 */
       .dark-mode .dark-mode-toggle {
         background-color: #fff;
         color: #333;
       }
 
+      /* 返回顶部按钮样式 */
       .back-to-top {
         position: fixed;
         bottom: 20px;
@@ -162,16 +179,19 @@
         visibility: hidden;
       }
 
+      /* 显示返回顶部按钮时的样式 */
       .back-to-top.show {
         opacity: 1;
         visibility: visible;
       }
 
+      /* 暗模式下的返回顶部按钮样式 */
       .dark-mode .back-to-top {
         background-color: rgba(255, 255, 255, 0.7);
         color: #333;
       }
 
+      /* 搜索框容器样式 */
       .search-container {
         text-align: center;
         margin: 20px 0;
@@ -180,6 +200,7 @@
         border-radius: 5px;
       }
 
+      /* 搜索输入框样式 */
       .search-input {
         padding: 10px;
         width: 300px;
@@ -189,6 +210,14 @@
         background-color: rgba(255, 255, 255, 0.7);
       }
 
+      /* 暗模式下的搜索输入框样式 */
+      .dark-mode .search-input {
+        background-color: rgba(68, 68, 68, 0.7);
+        color: #fff;
+        border-color: #666;
+      }
+
+      /* 搜索按钮样式 */
       .search-btn {
         padding: 10px 20px;
         background-color: rgba(51, 51, 51, 0.7);
@@ -200,16 +229,12 @@
         margin-left: 10px;
       }
 
-      .dark-mode .search-input {
-        background-color: rgba(68, 68, 68, 0.7);
-        color: #fff;
-        border-color: #666;
-      }
-
+      /* 暗模式下的搜索按钮样式 */
       .dark-mode .search-btn {
         background-color: rgba(102, 102, 102, 0.7);
       }
 
+      /* 移动端响应式样式 */
       @media (max-width: 767px) {
         .video-container {
           max-width: 100%;
@@ -230,7 +255,9 @@
 
   <body>
     <div id="app" :class="{ 'dark-mode': isDarkMode }">
+      <!-- 公告栏 -->
       <div class="announcement-bar">这里是用来归档的视频站</div>
+      <!-- 导航栏 -->
       <div class="navbar">
         <div class="search-container">
           <input
@@ -245,6 +272,7 @@
       </div>
       <div id="search-results"></div>
       <div class="main-content">
+        <!-- 视频列表 -->
         <div class="video-list">
           <div
             v-for="(file, index) in filteredFiles"
@@ -262,6 +290,7 @@
             </p>
           </div>
         </div>
+        <!-- 侧边栏 -->
         <div class="sidebar">
           <h3>这是LEl_FENG的B站视频备份站</h3>
           <p>有兴趣可以看看哦~</p>
@@ -274,11 +303,16 @@
             显示 {% raw %}{{ filteredFiles.length }}{% endraw %} / {% raw %}{{
             files.length }}{% endraw %} 个视频
           </p>
+          <a href="https://icp.gov.moe/?keyword=20240290" target="_blank"
+            >萌ICP备20240290号</a
+          >
         </div>
       </div>
+      <!-- 切换暗/亮模式按钮 -->
       <button @click="toggleDarkMode" class="dark-mode-toggle">
         切换暗夜模式
       </button>
+      <!-- 返回顶部按钮 -->
       <button
         @click="scrollToTop"
         class="back-to-top"
@@ -289,41 +323,55 @@
     </div>
 
     <script>
+      // 从后端获取视频文件列表数据
       window.videoFiles = {{ video_files_json | safe }};
 
       new Vue({
           el: '#app',
           data: {
+              // 存储所有视频文件
               files: window.videoFiles,
+              // 搜索关键词
               searchTerm: '',
+              // 暗/亮模式状态
               isDarkMode: false,
+              // 当前 UTC 时间
               utcTime: '',
+              // 当前播放的视频标题
               currentVideoTitle: '',
+              // 是否显示返回顶部按钮
               showBackToTop: false,
           },
           computed: {
+              // 根据搜索关键词筛选视频文件
               filteredFiles() {
                   const searchTerm = this.searchTerm.trim().toLowerCase();
                   return this.files.filter(file => file.title.toLowerCase().includes(searchTerm));
               }
           },
           methods: {
+              // 搜索功能已通过计算属性实现
               searchVideos() {
                   // 搜索功能已通过计算属性实现
               },
+              // 切换暗/亮模式
               toggleDarkMode() {
                   this.isDarkMode = !this.isDarkMode;
               },
+              // 更新当前 UTC 时间
               updateUTCTime() {
                   const now = new Date();
                   this.utcTime = now.toUTCString();
               },
+              // 滚动到页面顶部
               scrollToTop() {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
               },
+              // 监听滚动事件,显示/隐藏返回顶部按钮
               handleScroll() {
                   this.showBackToTop = window.pageYOffset > 300;
               },
+              // 初始化 DPlayer 播放器
               initDPlayers() {
                   this.$nextTick(() => {
                       this.files.forEach((file, index) => {
@@ -338,11 +386,13 @@
                       });
                   });
               },
+              // 设置当前播放的视频标题
               setCurrentVideo(title) {
                   this.currentVideoTitle = title;
               }
           },
           mounted() {
+              // 在组件挂载完成后执行
               this.updateUTCTime();
               setInterval(this.updateUTCTime, 1000);
 
@@ -351,6 +401,7 @@
               this.initDPlayers();
           },
           beforeDestroy() {
+              // 在组件销毁前移除事件监听
               window.removeEventListener('scroll', this.handleScroll);
           }
       });
