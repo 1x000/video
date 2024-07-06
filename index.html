@@ -1,281 +1,283 @@
 <!DOCTYPE html><html lang=zh-cn><head><title>雷锋视频归档</title><meta name=viewport content="width=device-width, initial-scale=1"><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css><script src=https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js></script><script src=https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.js></script><style>
-        /* 保持原有的样式不变 */
-        body {
-            transition: background-color 0.3s ease;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('https://cdn.xpdbk.com/gh/1x000/zdzy/tp/246223.jpg');
-            background-size: cover;
-            background-attachment: fixed;
-        }
+      /* 保持原有的样式不变 */
+      body {
+        transition: background-color 0.3s ease;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url("https://cdn.xpdbk.com/gh/1x000/zdzy/tp/246223.jpg");
+        background-size: cover;
+        background-attachment: fixed;
+      }
 
-        .dark-mode {
-            background-color: #333;
-            color: #fff;
-        }
+      .dark-mode {
+        background-color: #333;
+        color: #fff;
+      }
 
-        .announcement-bar {
-            background-color: rgba(51, 51, 51, 0.7);
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-        }
+      .announcement-bar {
+        background-color: rgba(51, 51, 51, 0.7);
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+      }
 
-        .navbar {
-            background-color: rgba(34, 34, 34, 0.7);
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
-            padding: 10px;
-        }
+      .navbar {
+        background-color: rgba(34, 34, 34, 0.7);
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+      }
 
-        .video-list {
-            display: flex;
-            flex-wrap: wrap;
-            padding: 20px;
-            flex: 1;
-            justify-content: center;
-        }
+      .video-list {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 20px;
+        flex: 1;
+        justify-content: center;
+      }
 
+      .video-container {
+        flex: 0 0 auto;
+        max-width: 320px;
+        margin: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        transition: transform 0.3s;
+        border-radius: 5px;
+        overflow: hidden;
+        background-color: rgba(255, 255, 255, 0.7);
+        color: #333;
+      }
+
+      .dark-mode .video-container {
+        background-color: rgba(68, 68, 68, 0.7);
+        color: #fff;
+      }
+
+      .sidebar {
+        width: 250px;
+        padding: 20px;
+        background-color: rgba(241, 241, 241, 0.7);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        margin-left: 20px;
+        position: sticky;
+        top: 20px;
+        /* 距离顶部的距离 */
+        max-height: calc(100vh - 40px);
+        /* 最大高度为视口高度减去上下边距 */
+        overflow-y: auto;
+        /* 如果内容过多，允许滚动 */
+      }
+
+      .dark-mode .sidebar {
+        background-color: rgba(68, 68, 68, 0.7);
+        color: #fff;
+      }
+
+      /* 为滚动条添加一些样式（可选） */
+      .sidebar::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .sidebar::-webkit-scrollbar-track {
+        background: rgba(241, 241, 241, 0.3);
+      }
+
+      .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(136, 136, 136, 0.5);
+        border-radius: 5px;
+      }
+
+      .dark-mode .sidebar::-webkit-scrollbar-track {
+        background: rgba(68, 68, 68, 0.3);
+      }
+
+      .dark-mode .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(170, 170, 170, 0.5);
+      }
+
+      .main-content {
+        display: flex;
+        padding: 20px;
+      }
+
+      .video-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
+          0 12px 40px 0 rgba(0, 0, 0, 0.19);
+      }
+
+      .video-title {
+        text-align: center;
+        margin: 10px 0;
+        font-size: 18px;
+        font-weight: bold;
+        color: inherit;
+      }
+
+      .dark-mode-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      .dark-mode .dark-mode-toggle {
+        background-color: #fff;
+        color: #333;
+      }
+
+      .back-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: rgba(51, 51, 51, 0.7);
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: opacity 0.3s, visibility 0.3s;
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .back-to-top.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .dark-mode .back-to-top {
+        background-color: rgba(255, 255, 255, 0.7);
+        color: #333;
+      }
+
+      .search-container {
+        text-align: center;
+        margin: 20px 0;
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 10px;
+        border-radius: 5px;
+      }
+
+      .search-input {
+        padding: 10px;
+        width: 300px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: rgba(255, 255, 255, 0.7);
+      }
+
+      .search-btn {
+        padding: 10px 20px;
+        background-color: rgba(51, 51, 51, 0.7);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-left: 10px;
+      }
+
+      .dark-mode .search-input {
+        background-color: rgba(68, 68, 68, 0.7);
+        color: #fff;
+        border-color: #666;
+      }
+
+      .dark-mode .search-btn {
+        background-color: rgba(102, 102, 102, 0.7);
+      }
+
+      @media (max-width: 767px) {
         .video-container {
-            flex: 0 0 auto;
-            max-width: 320px;
-            margin: 20px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
-            transition: transform .3s;
-            border-radius: 5px;
-            overflow: hidden;
-            background-color: rgba(255, 255, 255, 0.7);
-            color: #333;
-        }
-
-        .dark-mode .video-container {
-            background-color: rgba(68, 68, 68, 0.7);
-            color: #fff;
-        }
-
-        .sidebar {
-            width: 250px;
-            padding: 20px;
-            background-color: rgba(241, 241, 241, 0.7);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
-            border-radius: 5px;
-            margin-left: 20px;
-            position: sticky;
-            top: 20px;
-            /* 距离顶部的距离 */
-            max-height: calc(100vh - 40px);
-            /* 最大高度为视口高度减去上下边距 */
-            overflow-y: auto;
-            /* 如果内容过多，允许滚动 */
-        }
-
-        .dark-mode .sidebar {
-            background-color: rgba(68, 68, 68, 0.7);
-            color: #fff;
-        }
-
-        /* 为滚动条添加一些样式（可选） */
-        .sidebar::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: rgba(241, 241, 241, 0.3);
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(136, 136, 136, 0.5);
-            border-radius: 5px;
-        }
-
-        .dark-mode .sidebar::-webkit-scrollbar-track {
-            background: rgba(68, 68, 68, 0.3);
-        }
-
-        .dark-mode .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(170, 170, 170, 0.5);
+          max-width: 100%;
         }
 
         .main-content {
-            display: flex;
-            padding: 20px;
+          flex-direction: column;
         }
 
-        .video-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, .2), 0 12px 40px 0 rgba(0, 0, 0, .19);
+        .sidebar {
+          width: 100%;
+          margin-left: 0;
+          margin-top: 20px;
         }
+      }
+    </style></head><body><div id=app :class="{ 'dark-mode': isDarkMode }"><div class=announcement-bar>这里是用来归档的视频站</div><div class=navbar><div class=search-container><input type=text v-model=searchTerm placeholder=搜索视频标题 class=search-input @input=searchVideos><button @click=searchVideos class=search-btn>搜索</button></div></div><div id=search-results></div><div class=main-content><div class=video-list><div v-for="(file, index) in filteredFiles" :key=index class=video-container @click=setCurrentVideo(file.title)><h2 class=video-title>{{ file.title }}</h2><div class=dplayer-container><div :id="'dplayer-' + index"></div></div><p> Size: {{ file.size }} bytes | Modified: {{ file.modified }} </p></div></div><div class=sidebar><h3>这是LEl_FENG的B站视频备份站</h3><p>有兴趣可以看看哦~</p><h4>UTC 时间</h4><p>{{ utcTime }}</p><h4>当前播放视频</h4><p>{{ currentVideoTitle }}</p><h4>视频计数</h4><p> 显示 {{ filteredFiles.length }} / {{ files.length }} 个视频 </p></div></div><button @click=toggleDarkMode class=dark-mode-toggle> 切换暗夜模式 </button><button @click=scrollToTop class=back-to-top :class="{ 'show': showBackToTop }"> 返回顶部 </button></div><script>
+      window.videoFiles = [{"path": "UP/2B2T CrystalPVP\u670d\u52a1\u5668\u5236\u4f5c\u5b8c\u6bd5\u5ba3\u4f20-p01-16.mp4", "size": 4315227, "modified": "2024-07-05 10:55:11", "type": "video", "mimeType": "video/mp4", "title": "2B2T CrystalPVP\u670d\u52a1\u5668\u5236\u4f5c\u5b8c\u6bd5\u5ba3\u4f20-p01-16"}, {"path": "UP/CS\u8d77\u6e90\u667a\u80fd\u66b4\u529b\u56de\u6eaf\u9884\u5224\u89e3\u6790\uff1f\uff01-p01-16.mp4", "size": 1272093, "modified": "2024-07-05 10:55:04", "type": "video", "mimeType": "video/mp4", "title": "CS\u8d77\u6e90\u667a\u80fd\u66b4\u529b\u56de\u6eaf\u9884\u5224\u89e3\u6790\uff1f\uff01-p01-16"}, {"path": "UP/FDPClient\u306emc521.cn \u5929\u5751 \u914d\u7f6e\u7b80\u4ecb AAC5-p01-16.mp4", "size": 2915523, "modified": "2024-07-05 10:55:03", "type": "video", "mimeType": "video/mp4", "title": "FDPClient\u306emc521.cn \u5929\u5751 \u914d\u7f6e\u7b80\u4ecb AAC5-p01-16"}, {"path": "UP/FDPClient\u306e\u9999\u8349\u8010\u6253\u738b-p01-16.mp4", "size": 5061497, "modified": "2024-07-05 10:55:04", "type": "video", "mimeType": "video/mp4", "title": "FDPClient\u306e\u9999\u8349\u8010\u6253\u738b-p01-16"}, {"path": "UP/IPhoneX\u7684\u52a8\u753b\u5341\u5206\u751a\u81f3\u4e5d\u5206\u597d\u7528-p01-16.mp4", "size": 1720345, "modified": "2024-07-05 10:55:56", "type": "video", "mimeType": "video/mp4", "title": "IPhoneX\u7684\u52a8\u753b\u5341\u5206\u751a\u81f3\u4e5d\u5206\u597d\u7528-p01-16"}, {"path": "UP/MC\u84dd\u51b0\u9ad8\u94c1\u4f4e\u901f\u622a\u505c\u5668 1.0-p01-16.mp4", "size": 4052158, "modified": "2024-07-05 10:54:59", "type": "video", "mimeType": "video/mp4", "title": "MC\u84dd\u51b0\u9ad8\u94c1\u4f4e\u901f\u622a\u505c\u5668 1.0-p01-16"}, {"path": "UP/webp\u4e92\u76f8\u8f6c\u6362\u795e\u5668-p01-16.mp4", "size": 602552, "modified": "2024-07-05 10:55:11", "type": "video", "mimeType": "video/mp4", "title": "webp\u4e92\u76f8\u8f6c\u6362\u795e\u5668-p01-16"}, {"path": "UP/[2b2t.xin] \u9644\u9b54\u53f0\u7981\u4eba\u5854-p01-16.mp4", "size": 2613133, "modified": "2024-07-05 10:58:37", "type": "video", "mimeType": "video/mp4", "title": "[2b2t.xin] \u9644\u9b54\u53f0\u7981\u4eba\u5854-p01-16"}, {"path": "UP/[2b2tcrystal] \u6c34\u6676pvp\u65e5\u5e38-p01-16.mp4", "size": 3317971, "modified": "2024-07-05 10:57:35", "type": "video", "mimeType": "video/mp4", "title": "[2b2tcrystal] \u6c34\u6676pvp\u65e5\u5e38-p01-16"}, {"path": "UP/[2b2t] 5b5t\u9003\u51fa\u91cd\u751f\u70b9\u8bb0\u5f55-p01-16.mp4", "size": 3304570, "modified": "2024-07-05 10:56:10", "type": "video", "mimeType": "video/mp4", "title": "[2b2t] 5b5t\u9003\u51fa\u91cd\u751f\u70b9\u8bb0\u5f55-p01-16"}, {"path": "UP/[2B2T] \u4e0d\u52a1\u6b63\u4e1a\u4e4bxin\u670dtelly\u642d\u8def-p01-16.mp4", "size": 2067936, "modified": "2024-07-05 10:59:31", "type": "video", "mimeType": "video/mp4", "title": "[2B2T] \u4e0d\u52a1\u6b63\u4e1a\u4e4bxin\u670dtelly\u642d\u8def-p01-16"}, {"path": "UP/[2b2t] \u57285b5t\u91cd\u751f\u70b9\u4f7f\u7528baritone\u6316\u91d1-p01-16.mp4", "size": 11626653, "modified": "2024-07-05 10:56:22", "type": "video", "mimeType": "video/mp4", "title": "[2b2t] \u57285b5t\u91cd\u751f\u70b9\u4f7f\u7528baritone\u6316\u91d1-p01-16"}, {"path": "UP/[2B2T] \u5f53\u65b0\u624b\u4f7f\u7528 3ar pingbypass cpvp-p01-16.mp4", "size": 4764176, "modified": "2024-07-05 10:58:39", "type": "video", "mimeType": "video/mp4", "title": "[2B2T] \u5f53\u65b0\u624b\u4f7f\u7528 3ar pingbypass cpvp-p01-16"}, {"path": "UP/[2B2T]\u624b\u673a\u73a92b2t-p01-16.mp4", "size": 5348673, "modified": "2024-07-05 10:56:43", "type": "video", "mimeType": "video/mp4", "title": "[2B2T]\u624b\u673a\u73a92b2t-p01-16"}, {"path": "UP/[2\u6b21\u8865\u6863] \u4e0d\u8981\u4f7f\u7528Vulcan\u53cd\u4f5c\u5f0a-p01-16.mp4", "size": 3832334, "modified": "2024-07-05 10:56:15", "type": "video", "mimeType": "video/mp4", "title": "[2\u6b21\u8865\u6863] \u4e0d\u8981\u4f7f\u7528Vulcan\u53cd\u4f5c\u5f0a-p01-16"}, {"path": "UP/[CPVP]2y2c 3ar \u72c2\u7b11\u7684\u86c7\u7eed\u5199\u6563\u6587-p01-16.mp4", "size": 4373023, "modified": "2024-07-05 10:57:33", "type": "video", "mimeType": "video/mp4", "title": "[CPVP]2y2c 3ar \u72c2\u7b11\u7684\u86c7\u7eed\u5199\u6563\u6587-p01-16"}, {"path": "UP/[CS\u5f00\u7eaa]HVH misslight ft.evol cs1.6-p01-16.mp4", "size": 2775883, "modified": "2024-07-05 10:57:18", "type": "video", "mimeType": "video/mp4", "title": "[CS\u5f00\u7eaa]HVH misslight ft.evol cs1.6-p01-16"}, {"path": "UP/[Fdpclient] ve bapa mineland  intawe antichansi... lao mao woke gude is super!-p01-16.mp4", "size": 2847429, "modified": "2024-07-05 10:55:37", "type": "video", "mimeType": "video/mp4", "title": "[Fdpclient] ve bapa mineland  intawe antichansi... lao mao woke gude is super!-p01-16"}, {"path": "UP/[PVP\u5927\u4f6c] \u8d85\u7ea7\u98de\u4fa0 25.59\u79d2 \u7eff\u73a9 \u901f\u901a Fastbreak-p01-16.mp4", "size": 1421097, "modified": "2024-07-05 10:55:25", "type": "video", "mimeType": "video/mp4", "title": "[PVP\u5927\u4f6c] \u8d85\u7ea7\u98de\u4fa0 25.59\u79d2 \u7eff\u73a9 \u901f\u901a Fastbreak-p01-16"}, {"path": "UP/[\u4e00\u952e\u5f00\u7eaa\u6574\u5408\u5305] Funclient\u4e0b\u8f7d\u9664\u9519\u548c\u4f7f\u7528\u6559\u7a0b-p01-16.mp4", "size": 4127508, "modified": "2024-07-05 10:55:34", "type": "video", "mimeType": "video/mp4", "title": "[\u4e00\u952e\u5f00\u7eaa\u6574\u5408\u5305] Funclient\u4e0b\u8f7d\u9664\u9519\u548c\u4f7f\u7528\u6559\u7a0b-p01-16"}, {"path": "UP/[\u52a0\u58f3]\u7ed9\u7a0b\u5e8f\u52a0\u58f3-p01-16.mp4", "size": 2022151, "modified": "2024-07-05 10:56:53", "type": "video", "mimeType": "video/mp4", "title": "[\u52a0\u58f3]\u7ed9\u7a0b\u5e8f\u52a0\u58f3-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] Blocksmc\u4f46\u662f\u5ba2\u670d\u6b63\u5728\u7761\u89c9\u800c\u6211\u6b63\u5728\u6478\u9c7c-p01-16.mp4", "size": 4763045, "modified": "2024-07-05 10:59:42", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] Blocksmc\u4f46\u662f\u5ba2\u670d\u6b63\u5728\u7761\u89c9\u800c\u6211\u6b63\u5728\u6478\u9c7c-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] Blocksmc\u5ba3\u4f20\u7247-p01-16.mp4", "size": 3054873, "modified": "2024-07-05 11:00:24", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] Blocksmc\u5ba3\u4f20\u7247-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] FDPClient\u5feb\u901f\u56de\u8840HVH\u4eab\u53d7\u8005-p01-16.mp4", "size": 3164756, "modified": "2024-07-05 10:59:30", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] FDPClient\u5feb\u901f\u56de\u8840HVH\u4eab\u53d7\u8005-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] [LifeBoat] \u57fa\u5ca9\u7248\u80cc\u8d77\u72c2\u7b11\u7684\u86c7\u5199\u300a\u98de\u9c7c\u68a6\u300b-p01-16.mp4", "size": 6198269, "modified": "2024-07-05 10:59:45", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] [LifeBoat] \u57fa\u5ca9\u7248\u80cc\u8d77\u72c2\u7b11\u7684\u86c7\u5199\u300a\u98de\u9c7c\u68a6\u300b-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] [lifeboat] \u624b\u673a\u57fa\u5ca9\u7248\u7ed5\u8d77\u6765\u771f\u5bb9\u6613-p01-16.mp4", "size": 5601631, "modified": "2024-07-05 11:00:15", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] [lifeboat] \u624b\u673a\u57fa\u5ca9\u7248\u7ed5\u8d77\u6765\u771f\u5bb9\u6613-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] \u770b\u5230VAPE\uff0c\u4e0d\u4f1a\u518d\u6d41\u773c\u6cea Blocksmc FakeVape-p01-16.mp4", "size": 5864134, "modified": "2024-07-05 10:59:51", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] \u770b\u5230VAPE\uff0c\u4e0d\u4f1a\u518d\u6d41\u773c\u6cea Blocksmc FakeVape-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa]HVH\u771f\u7684\u662f\u592a\u597d\u73a9\u5566\uff01-p01-16.mp4", "size": 1730867, "modified": "2024-07-05 10:57:07", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa]HVH\u771f\u7684\u662f\u592a\u597d\u73a9\u5566\uff01-p01-16"}, {"path": "UP/[\u6211\u7684\u4e16\u754c\u670d\u52a1\u5668]\u975e\u5e38\u6cb3\u91cc\u7684minecraft\u516c\u76ca\u670d\u52a1\u5668\u7f51\u9875-p01-16.mp4", "size": 2784441, "modified": "2024-07-05 10:59:16", "type": "video", "mimeType": "video/mp4", "title": "[\u6211\u7684\u4e16\u754c\u670d\u52a1\u5668]\u975e\u5e38\u6cb3\u91cc\u7684minecraft\u516c\u76ca\u670d\u52a1\u5668\u7f51\u9875-p01-16"}, {"path": "UP/[\u6298\u817e] IOS\u600e\u4e48\u5bf9BILIBILI\u964d\u7ea7 \u5931\u8d25-p01-16.mp4", "size": 3862169, "modified": "2024-07-05 10:55:39", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e] IOS\u600e\u4e48\u5bf9BILIBILI\u964d\u7ea7 \u5931\u8d25-p01-16"}, {"path": "UP/[\u6298\u817e] \u6211\u7684\u4e16\u754cHMCL \u7f16\u8bd1 \u8fc7\u7a0b-p01-16.mp4", "size": 2281764, "modified": "2024-07-05 10:56:00", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e] \u6211\u7684\u4e16\u754cHMCL \u7f16\u8bd1 \u8fc7\u7a0b-p01-16"}, {"path": "UP/[\u6298\u817e] \u7b14\u8bb0\u672c\u7535\u8111\u62c6\u89e3-p01-16.mp4", "size": 7787945, "modified": "2024-07-05 10:55:51", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e] \u7b14\u8bb0\u672c\u7535\u8111\u62c6\u89e3-p01-16"}, {"path": "UP/[\u6298\u817e]Spacedesk\u6295\u5c4f\u795e\u5668_ win7\u7535\u8111\u8f6c\u624b\u673a\u786c\u4ef6\u52a0\u901f\u5f55\u5c4f\u4e0e\u65e0\u7ebf\u6295\u5c4f-p01-16.mp4", "size": 4982137, "modified": "2024-07-05 10:58:57", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e]Spacedesk\u6295\u5c4f\u795e\u5668_ win7\u7535\u8111\u8f6c\u624b\u673a\u786c\u4ef6\u52a0\u901f\u5f55\u5c4f\u4e0e\u65e0\u7ebf\u6295\u5c4f-p01-16"}, {"path": "UP/[\u6298\u817e]\u4f7f\u7528\u53e4\u8463\u7535\u8111\u5f00\u53d1\u5b89\u5353\u7a0b\u5e8f+Arm\u865a\u62df\u6d4b\u8bd5-p01-16.mp4", "size": 2381722, "modified": "2024-07-05 10:59:07", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e]\u4f7f\u7528\u53e4\u8463\u7535\u8111\u5f00\u53d1\u5b89\u5353\u7a0b\u5e8f+Arm\u865a\u62df\u6d4b\u8bd5-p01-16"}, {"path": "UP/[\u6298\u817e]\u8001\u53e4\u8463\u7535\u8111minecraft Fps\u5e27\u6570\u6027\u80fd\u4f18\u5316\u8bbe\u8ba1\u7a3340\u5e27FPS-p01-16.mp4", "size": 3129027, "modified": "2024-07-05 10:59:15", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e]\u8001\u53e4\u8463\u7535\u8111minecraft Fps\u5e27\u6570\u6027\u80fd\u4f18\u5316\u8bbe\u8ba1\u7a3340\u5e27FPS-p01-16"}, {"path": "UP/[\u6298\u817e\u5b89\u5353\u624b\u673a] \u5f53\u4f60\u5c06\u534e\u4e3a\u624b\u673a\u7684data\u76ee\u5f55\u683c\u5f0f\u5316\u4f1a\u53d1\u751f\u4ec0\u4e48\uff1f-p01-16.mp4", "size": 3499226, "modified": "2024-07-05 10:56:06", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e\u5b89\u5353\u624b\u673a] \u5f53\u4f60\u5c06\u534e\u4e3a\u624b\u673a\u7684data\u76ee\u5f55\u683c\u5f0f\u5316\u4f1a\u53d1\u751f\u4ec0\u4e48\uff1f-p01-16"}, {"path": "UP/[\u6298\u817e\u624b\u673a] \u534e\u4e3a\u624b\u673a\u4e09\u952e\u5f3a\u5237\u5931\u8d25-p01-16.mp4", "size": 688664, "modified": "2024-07-05 10:56:02", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e\u624b\u673a] \u534e\u4e3a\u624b\u673a\u4e09\u952e\u5f3a\u5237\u5931\u8d25-p01-16"}, {"path": "UP/[\u62bd\u8c61]\u523b\u677f\u5370\u8c61-p01-16.mp4", "size": 1896731, "modified": "2024-07-05 10:57:00", "type": "video", "mimeType": "video/mp4", "title": "[\u62bd\u8c61]\u523b\u677f\u5370\u8c61-p01-16"}, {"path": "UP/[\u641e\u7b11] \u6c34\u5f71\u7684\u65b0\u624bJAVADEV\u7684\u73b0\u72b6-p01-16.mp4", "size": 4383133, "modified": "2024-07-05 11:00:55", "type": "video", "mimeType": "video/mp4", "title": "[\u641e\u7b11] \u6c34\u5f71\u7684\u65b0\u624bJAVADEV\u7684\u73b0\u72b6-p01-16"}, {"path": "UP/[\u6574\u6d3b]\u6bd4\u795e\u6865\u642d\u5feb\u7684\u642d\u8def\u65b9\u5f0f-p01-16.mp4", "size": 3394354, "modified": "2024-07-05 10:57:24", "type": "video", "mimeType": "video/mp4", "title": "[\u6574\u6d3b]\u6bd4\u795e\u6865\u642d\u5feb\u7684\u642d\u8def\u65b9\u5f0f-p01-16"}, {"path": "UP/[\u7f51\u7ad9\u642d\u5efa]\u7528\u624b\u673a\u6d4b\u8bd5\u65b0\u7eaa\u72d7\u7ad9\u7684\u517c\u5bb9-p01-16.mp4", "size": 1310562, "modified": "2024-07-05 10:58:38", "type": "video", "mimeType": "video/mp4", "title": "[\u7f51\u7ad9\u642d\u5efa]\u7528\u624b\u673a\u6d4b\u8bd5\u65b0\u7eaa\u72d7\u7ad9\u7684\u517c\u5bb9-p01-16"}, {"path": "UP/[\u860b\u679c\u8d8a\u7344]chimera\u8d8a\u72f1IOS12.5.7\u6210\u529f\uff01-p01-16.mp4", "size": 2857210, "modified": "2024-07-05 10:55:56", "type": "video", "mimeType": "video/mp4", "title": "[\u860b\u679c\u8d8a\u7344]chimera\u8d8a\u72f1IOS12.5.7\u6210\u529f\uff01-p01-16"}, {"path": "UP/[\u8865\u6321]hycraft old bypass config-p01-16.mp4", "size": 2885327, "modified": "2024-07-05 10:57:12", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6321]hycraft old bypass config-p01-16"}, {"path": "UP/[\u8865\u6321]\u5927\u54e5\u73a9cf\u73a9\u7d2f\u4e86 \u73a9\u4e2a\u6211\u7684\u4e16\u754c\u600e\u4e48\u4e86-p01-16.mp4", "size": 4011012, "modified": "2024-07-05 10:57:07", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6321]\u5927\u54e5\u73a9cf\u73a9\u7d2f\u4e86 \u73a9\u4e2a\u6211\u7684\u4e16\u754c\u600e\u4e48\u4e86-p01-16"}, {"path": "UP/[\u8865\u6863] buzz pika bypass-p01-16.mp4", "size": 2198959, "modified": "2024-07-05 10:57:28", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6863] buzz pika bypass-p01-16"}, {"path": "UP/[\u8865\u6863] [2B2T.xin] \u6f5c\u5f71\u76d2\u5237\u7269\u54c1\u9b54\u6539GS-p01-16.mp4", "size": 9484657, "modified": "2024-07-05 10:58:34", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6863] [2B2T.xin] \u6f5c\u5f71\u76d2\u5237\u7269\u54c1\u9b54\u6539GS-p01-16"}, {"path": "UP/[\u8865\u6863]\u3010\u8fdc\u53e4zonecraft\u3011FDP \u7eaa\u72d7 \u914d\u7f6e-p01-16.mp4", "size": 2527480, "modified": "2024-07-05 10:57:40", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6863]\u3010\u8fdc\u53e4zonecraft\u3011FDP \u7eaa\u72d7 \u914d\u7f6e-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u5408\u4f5c\u5f00\u7eaa] \u4e09\u4eba\u4f7f\u7528FDP\u51fa\u51fbBMC\u53ea\u9700\u89811.5\u5206\u949f\u5373\u53ef\u7ed3\u675f\u5bf9\u5c40-p01-16.mp4", "size": 7825935, "modified": "2024-07-05 11:00:55", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u5408\u4f5c\u5f00\u7eaa] \u4e09\u4eba\u4f7f\u7528FDP\u51fa\u51fbBMC\u53ea\u9700\u89811.5\u5206\u949f\u5373\u53ef\u7ed3\u675f\u5bf9\u5c40-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u5a31\u4e50\u5f00\u7eaa] KevinCleint\u7ed5\u8fc7PolarAC-p01-16.mp4", "size": 8939682, "modified": "2024-07-05 11:00:34", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u5a31\u4e50\u5f00\u7eaa] KevinCleint\u7ed5\u8fc7PolarAC-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u5a31\u4e50\u5f00\u7eaa] \u4f7f\u7528FDPClient\u8fdb\u5165Blocksmc\u8fdb\u884c\u4e00\u4e2a\u7ed5\u8fc7-p01-16.mp4", "size": 1731819, "modified": "2024-07-05 11:00:15", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u5a31\u4e50\u5f00\u7eaa] \u4f7f\u7528FDPClient\u8fdb\u5165Blocksmc\u8fdb\u884c\u4e00\u4e2a\u7ed5\u8fc7-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u8865\u6863] [\u914d\u7f6e\u7b80\u4ecb] FDPClient\u8fdb\u884cblockdrop\u7684bypass\u505aNCPFLY-Noslow-p01-16.mp4", "size": 3823848, "modified": "2024-07-05 11:00:55", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u8865\u6863] [\u914d\u7f6e\u7b80\u4ecb] FDPClient\u8fdb\u884cblockdrop\u7684bypass\u505aNCPFLY-Noslow-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u8865\u6863] [\u914d\u7f6e\u7b80\u4ecb] Old pika network bypass Full-p01-16.mp4", "size": 6129917, "modified": "2024-07-05 11:01:09", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u8865\u6863] [\u914d\u7f6e\u7b80\u4ecb] Old pika network bypass Full-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u8865\u6863] \u90e8\u5206\u7ed5\u8fc7 mineland\u65e7\u7248\u706b\u795e-p01-16.mp4", "size": 4590707, "modified": "2024-07-05 11:00:23", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u8865\u6863] \u90e8\u5206\u7ed5\u8fc7 mineland\u65e7\u7248\u706b\u795e-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] 3fmc bypass grimac+Matrix+AAC5-p01-16.mp4", "size": 3619917, "modified": "2024-07-05 11:01:00", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] 3fmc bypass grimac+Matrix+AAC5-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] Aug legit\u914d\u7f6e\u5728karhu\u548cGrimAC\u548cSpartan\u548cMatrix\u548cAAC\u548cNCP\u548cHawk\u548cVulcan\u6d4b\u8bd5\u642d\u8def\u548c\u56de\u5f39-p01-16.mp4", "size": 3416939, "modified": "2024-07-05 11:00:08", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] Aug legit\u914d\u7f6e\u5728karhu\u548cGrimAC\u548cSpartan\u548cMatrix\u548cAAC\u548cNCP\u548cHawk\u548cVulcan\u6d4b\u8bd5\u642d\u8def\u548c\u56de\u5f39-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9Blocksmc\u7a7a\u5c9b\u7684NCP\u53cd\u4f5c\u5f0a\u8fdb\u884cBypass-p01-16.mp4", "size": 2823453, "modified": "2024-07-05 11:01:09", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9Blocksmc\u7a7a\u5c9b\u7684NCP\u53cd\u4f5c\u5f0a\u8fdb\u884cBypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] GrimAC\u7684Scaffold+Noslow+Killaura\u7684Bypass-p01-16.mp4", "size": 4999945, "modified": "2024-07-05 11:00:46", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] GrimAC\u7684Scaffold+Noslow+Killaura\u7684Bypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] KevinCleint\u7ed5\u8fc7\u82b1\u96e8\u5ead\u4e00\u6837\u7684GrimAC\u53cd\u4f5c\u5f0a\u7684\u8df3\u8dc3Scaffold-p01-16.mp4", "size": 6937387, "modified": "2024-07-05 11:00:38", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] KevinCleint\u7ed5\u8fc7\u82b1\u96e8\u5ead\u4e00\u6837\u7684GrimAC\u53cd\u4f5c\u5f0a\u7684\u8df3\u8dc3Scaffold-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] KevinClient\u8fdb\u884chvh\u5728coldpvp-p01-16.mp4", "size": 7973187, "modified": "2024-07-05 11:00:39", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] KevinClient\u8fdb\u884chvh\u5728coldpvp-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] Kevin\u5728Zonecraft\u7684grimac\u8fdb\u884c\u4e00\u4e2aBypass-p01-16.mp4", "size": 4414655, "modified": "2024-07-05 11:00:44", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] Kevin\u5728Zonecraft\u7684grimac\u8fdb\u884c\u4e00\u4e2aBypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u4f7f\u7528FDPClient\u5728Blockdrop\u98de\u884c-p01-16.mp4", "size": 5342914, "modified": "2024-07-05 10:59:58", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u4f7f\u7528FDPClient\u5728Blockdrop\u98de\u884c-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u53d1\u5e03\u57fa\u5ca9\u7248lifeboat\u7ed5\u8fc7-p01-16.mp4", "size": 2482486, "modified": "2024-07-05 11:00:12", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u53d1\u5e03\u57fa\u5ca9\u7248lifeboat\u7ed5\u8fc7-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u5bf9\u4f7f\u7528verus\u7684coldpvp\u670d\u52a1\u5668\u8fdb\u884cbypass-p01-16.mp4", "size": 3067450, "modified": "2024-07-05 11:01:04", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u5bf9\u4f7f\u7528verus\u7684coldpvp\u670d\u52a1\u5668\u8fdb\u884cbypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u7ed5\u8fc7Blocksmc-p01-16.mp4", "size": 3599494, "modified": "2024-07-05 11:00:06", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u7ed5\u8fc7Blocksmc-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u8fdb\u5165Madcraft\u8fd9\u4e2a\u4f7f\u7528Vulcan\u7684\u670d\u52a1\u5668\u8fdb\u884cbypass-p01-16.mp4", "size": 6822143, "modified": "2024-07-05 11:01:14", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u8fdb\u5165Madcraft\u8fd9\u4e2a\u4f7f\u7528Vulcan\u7684\u670d\u52a1\u5668\u8fdb\u884cbypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7ed5\u8fc7Seksin\u8fd9\u4e2aP2W\u670d\u52a1\u5668\u4f7f\u7528\u65e7\u7248GrimAC-p01-16.mp4", "size": 5576351, "modified": "2024-07-05 10:59:55", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7ed5\u8fc7Seksin\u8fd9\u4e2aP2W\u670d\u52a1\u5668\u4f7f\u7528\u65e7\u7248GrimAC-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] \u5f00\u88c2\u5927\u7aef\u7ed5\u8fc7GrimAC\u7684Scaffold-p01-16.mp4", "size": 3918046, "modified": "2024-07-05 11:00:15", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] \u5f00\u88c2\u5927\u7aef\u7ed5\u8fc7GrimAC\u7684Scaffold-p01-16"}, {"path": "UP/[\u89e3BAN] \u5149\u732b\u7528\u5f3a\u5236\u62e8\u53f7\u66ff\u6362\u516c\u7f51IP-p01-16.mp4", "size": 2891208, "modified": "2024-07-05 11:00:01", "type": "video", "mimeType": "video/mp4", "title": "[\u89e3BAN] \u5149\u732b\u7528\u5f3a\u5236\u62e8\u53f7\u66ff\u6362\u516c\u7f51IP-p01-16"}, {"path": "UP/[\u89e3BAN] \u5982\u4f55\u91cd\u542f\u5149\u732b\u66f4\u6362\u516c\u7f51IP-p01-16.mp4", "size": 1567638, "modified": "2024-07-05 11:00:08", "type": "video", "mimeType": "video/mp4", "title": "[\u89e3BAN] \u5982\u4f55\u91cd\u542f\u5149\u732b\u66f4\u6362\u516c\u7f51IP-p01-16"}, {"path": "UP/[\u8bb0\u5f55]\u7b2c\u4e00\u6b21\u5b66\u4f1a\u4f7f\u7528\u7535\u8111OBS\u5f55\u5c4f-p01-16.mp4", "size": 5961783, "modified": "2024-07-05 10:59:27", "type": "video", "mimeType": "video/mp4", "title": "[\u8bb0\u5f55]\u7b2c\u4e00\u6b21\u5b66\u4f1a\u4f7f\u7528\u7535\u8111OBS\u5f55\u5c4f-p01-16"}, {"path": "UP/[\u8d70\u8fd1\u79d1\u5b66] \u8d70\u8fd1IPhone6\u652f\u6301\u300aFaceID\u300b\u79d1\u5b66-p01-16.mp4", "size": 2012789, "modified": "2024-07-05 10:55:39", "type": "video", "mimeType": "video/mp4", "title": "[\u8d70\u8fd1\u79d1\u5b66] \u8d70\u8fd1IPhone6\u652f\u6301\u300aFaceID\u300b\u79d1\u5b66-p01-16"}, {"path": "UP/[\u8de8\u5e73\u53f0]Blocksmc \u624b\u673a\u7aef-p01-16.mp4", "size": 4657198, "modified": "2024-07-05 10:57:14", "type": "video", "mimeType": "video/mp4", "title": "[\u8de8\u5e73\u53f0]Blocksmc \u624b\u673a\u7aef-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] fdpclient blocksmc-p01-16.mp4", "size": 1878144, "modified": "2024-07-05 10:59:02", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] fdpclient blocksmc-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9GrimAC\u7684\u7ed5\u8fc7-p01-16.mp4", "size": 3394751, "modified": "2024-07-05 10:59:37", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9GrimAC\u7684\u7ed5\u8fc7-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9\u4f7f\u7528NCP\u7684Blocksmc\u8fdb\u884cBypass-p01-16.mp4", "size": 6058154, "modified": "2024-07-05 11:01:18", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9\u4f7f\u7528NCP\u7684Blocksmc\u8fdb\u884cBypass-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] mineland\u670d\u52a1\u5668intave\u7ed5\u8fc7LB+-p01-16.mp4", "size": 3729336, "modified": "2024-07-05 10:56:27", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] mineland\u670d\u52a1\u5668intave\u7ed5\u8fc7LB+-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] \u5ba2\u670d\u5c01\u53f7 coldpvp verus fdpclient-p01-16.mp4", "size": 6135829, "modified": "2024-07-05 10:59:09", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] \u5ba2\u670d\u5c01\u53f7 coldpvp verus fdpclient-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u7ed5\u8fc7Blocksmc-p01-16.mp4", "size": 4382525, "modified": "2024-07-05 10:59:36", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u7ed5\u8fc7Blocksmc-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb]Kevin\u5ba2\u6237\u7aef GrimAC+Matrix \u65e0\u9650\u642d\u8def-p01-16.mp4", "size": 14879713, "modified": "2024-07-05 10:59:02", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb]Kevin\u5ba2\u6237\u7aef GrimAC+Matrix \u65e0\u9650\u642d\u8def-p01-16"}, {"path": "UP/_\u786c\u76d8\u6a21\u62df\u5668_-p01-16.mp4", "size": 1685407, "modified": "2024-07-05 10:54:28", "type": "video", "mimeType": "video/mp4", "title": "_\u786c\u76d8\u6a21\u62df\u5668_-p01-16"}, {"path": "UP/\u300a\u72c2\u7b11\u7684\u86c7\u5c06\u5199\u6563\u6587\u300b-p01-16.mp4", "size": 5673810, "modified": "2024-07-05 10:54:55", "type": "video", "mimeType": "video/mp4", "title": "\u300a\u72c2\u7b11\u7684\u86c7\u5c06\u5199\u6563\u6587\u300b-p01-16"}, {"path": "UP/\u4f60\u53ea\u9700\u6309\u4e0bW\u952e\uff0c\u63a5\u4e0b\u6765\u4ea4\u7ed9VAPE\uff01-p01-16.mp4", "size": 7039485, "modified": "2024-07-05 10:55:35", "type": "video", "mimeType": "video/mp4", "title": "\u4f60\u53ea\u9700\u6309\u4e0bW\u952e\uff0c\u63a5\u4e0b\u6765\u4ea4\u7ed9VAPE\uff01-p01-16"}, {"path": "UP/\u4f7f\u7528NIX\u5728CSGO\u6253\u6b7b\u50f5\u5c38-p01-16.mp4", "size": 4928192, "modified": "2024-07-05 10:54:38", "type": "video", "mimeType": "video/mp4", "title": "\u4f7f\u7528NIX\u5728CSGO\u6253\u6b7b\u50f5\u5c38-p01-16"}, {"path": "UP/\u5168\u90e8\u90fd\u662f\u5b9e\u529bOK\uff1f-p01-16.mp4", "size": 1207361, "modified": "2024-07-05 10:54:31", "type": "video", "mimeType": "video/mp4", "title": "\u5168\u90e8\u90fd\u662f\u5b9e\u529bOK\uff1f-p01-16"}, {"path": "UP/\u534e\u4e3a\u9e92\u9e9f\u7684960\u89e3\u9664\u6e29\u63a7\u540e\u73a9\u6211\u7684\u4e16\u754c\u7684\u8868\u73b0-p01-16.mp4", "size": 3315153, "modified": "2024-07-05 10:55:32", "type": "video", "mimeType": "video/mp4", "title": "\u534e\u4e3a\u9e92\u9e9f\u7684960\u89e3\u9664\u6e29\u63a7\u540e\u73a9\u6211\u7684\u4e16\u754c\u7684\u8868\u73b0-p01-16"}, {"path": "UP/\u53cd\u4f5c\u5f0a\u8bef\u5224\u6d4b\u8bd5-p01-16.mp4", "size": 2592963, "modified": "2024-07-05 10:55:23", "type": "video", "mimeType": "video/mp4", "title": "\u53cd\u4f5c\u5f0a\u8bef\u5224\u6d4b\u8bd5-p01-16"}, {"path": "UP/\u56fe\u5427\u5de5\u5177\u7bb1\u5b98\u7f51\u590d\u523b-p01-16.mp4", "size": 1280351, "modified": "2024-07-05 10:55:00", "type": "video", "mimeType": "video/mp4", "title": "\u56fe\u5427\u5de5\u5177\u7bb1\u5b98\u7f51\u590d\u523b-p01-16"}, {"path": "UP/\u5730\u94c1\u9003\u751f\u6709\u771f\u6b63\u7262\u5927\u8981\u8098\u51fb\u5916\u56fd\u4eba-p01-16.mp4", "size": 8204222, "modified": "2024-07-05 10:54:36", "type": "video", "mimeType": "video/mp4", "title": "\u5730\u94c1\u9003\u751f\u6709\u771f\u6b63\u7262\u5927\u8981\u8098\u51fb\u5916\u56fd\u4eba-p01-16"}, {"path": "UP/\u5c1d\u8bd5\u7ed9\u5c0f\u7c73mini\u8def\u7531\u5668\u7684\u6838\u5fc3cpu\u8fdb\u884c\u4e00\u4e2a\u5c0f\u5c0f\u7684\u8d85\u9891-p01-16.mp4", "size": 1993934, "modified": "2024-07-05 10:55:30", "type": "video", "mimeType": "video/mp4", "title": "\u5c1d\u8bd5\u7ed9\u5c0f\u7c73mini\u8def\u7531\u5668\u7684\u6838\u5fc3cpu\u8fdb\u884c\u4e00\u4e2a\u5c0f\u5c0f\u7684\u8d85\u9891-p01-16"}, {"path": "UP/\u6211\u7684\u4e16\u754c POT PVP FDP Verus Config\u914d\u7f6e\u7b80\u4ecb-p01-16.mp4", "size": 6925181, "modified": "2024-07-05 10:54:58", "type": "video", "mimeType": "video/mp4", "title": "\u6211\u7684\u4e16\u754c POT PVP FDP Verus Config\u914d\u7f6e\u7b80\u4ecb-p01-16"}, {"path": "UP/\u6253\u4e86\u4e4b\u540e\u5f53\u7136\u8981\u7206\u91d1\u5e01\u4e86-p01-16.mp4", "size": 8676217, "modified": "2024-07-05 10:54:47", "type": "video", "mimeType": "video/mp4", "title": "\u6253\u4e86\u4e4b\u540e\u5f53\u7136\u8981\u7206\u91d1\u5e01\u4e86-p01-16"}, {"path": "UP/\u6253\u672b\u5f71\u9f99\u7528\u67aa\u5c31\u884c\u4e86\uff01-p01-16.mp4", "size": 12093199, "modified": "2024-07-05 10:54:43", "type": "video", "mimeType": "video/mp4", "title": "\u6253\u672b\u5f71\u9f99\u7528\u67aa\u5c31\u884c\u4e86\uff01-p01-16"}, {"path": "UP/\u6709\u6846\u4f60\u4e0d\u6253\uff1f-p01-16.mp4", "size": 2408016, "modified": "2024-07-05 10:54:49", "type": "video", "mimeType": "video/mp4", "title": "\u6709\u6846\u4f60\u4e0d\u6253\uff1f-p01-16"}, {"path": "UP/\u6709\u6846\u6211\u6253\u554a-p01-16.mp4", "size": 4205801, "modified": "2024-07-05 10:54:47", "type": "video", "mimeType": "video/mp4", "title": "\u6709\u6846\u6211\u6253\u554a-p01-16"}, {"path": "UP/\u671f\u672b\u8003\u8bd5\u524d\u4f7f\u7528FDPClient\u6e38\u73a9mineland\u670d\u52a1\u5668-p01-16.mp4", "size": 5753977, "modified": "2024-07-05 10:55:28", "type": "video", "mimeType": "video/mp4", "title": "\u671f\u672b\u8003\u8bd5\u524d\u4f7f\u7528FDPClient\u6e38\u73a9mineland\u670d\u52a1\u5668-p01-16"}, {"path": "UP/\u786c\u76d8\u6570\u636e\u6062\u590d\u4f7f\u7528PC-3000\u8bfb\u53d6\u4e2d-p01-16.mp4", "size": 1327344, "modified": "2024-07-05 10:54:29", "type": "video", "mimeType": "video/mp4", "title": "\u786c\u76d8\u6570\u636e\u6062\u590d\u4f7f\u7528PC-3000\u8bfb\u53d6\u4e2d-p01-16"}, {"path": "UP/\u7eaa\u72d7\u5bfc\u822a\u7f51\u6d4b\u8bd5-p01-16.mp4", "size": 619816, "modified": "2024-07-05 10:55:14", "type": "video", "mimeType": "video/mp4", "title": "\u7eaa\u72d7\u5bfc\u822a\u7f51\u6d4b\u8bd5-p01-16"}, {"path": "UP/\u8fd8\u7528\u5200\u5417\u65f6\u4ee3\u53d8\u4e86\u8001\u5f1f\uff01-p01-16.mp4", "size": 5459540, "modified": "2024-07-05 10:54:42", "type": "video", "mimeType": "video/mp4", "title": "\u8fd8\u7528\u5200\u5417\u65f6\u4ee3\u53d8\u4e86\u8001\u5f1f\uff01-p01-16"}, {"path": "UP/\u8fd9\u662f\u4e00\u4e2a\u53ef\u4ee5\u722c\u53d6\u6b63\u7248\u73a9\u5bb6\u76ae\u80a4\u7684\u7a0b\u5e8f\uff1f\uff01-p01-16.mp4", "size": 1018873, "modified": "2024-07-05 10:55:13", "type": "video", "mimeType": "video/mp4", "title": "\u8fd9\u662f\u4e00\u4e2a\u53ef\u4ee5\u722c\u53d6\u6b63\u7248\u73a9\u5bb6\u76ae\u80a4\u7684\u7a0b\u5e8f\uff1f\uff01-p01-16"}, {"path": "UP/\u914d\u7f6e\u7f51\u7ad9\u66f4\u65b0-p01-16.mp4", "size": 4390797, "modified": "2024-07-05 10:55:21", "type": "video", "mimeType": "video/mp4", "title": "\u914d\u7f6e\u7f51\u7ad9\u66f4\u65b0-p01-16"}, {"path": "UP/\u96f7\u950bAPI\u63a5\u53e3\u7ad9\u4e0a\u7ebf\u5566, \u6b22\u8fce\u5927\u5bb6\u4f7f\u7528~~-p01-16.mp4", "size": 1327298, "modified": "2024-07-05 10:54:50", "type": "video", "mimeType": "video/mp4", "title": "\u96f7\u950bAPI\u63a5\u53e3\u7ad9\u4e0a\u7ebf\u5566, \u6b22\u8fce\u5927\u5bb6\u4f7f\u7528~~-p01-16"}];
 
-        .video-title {
-            text-align: center;
-            margin: 10px 0;
-            font-size: 18px;
-            font-weight: bold;
-            color: inherit;
-        }
+      new Vue({
+          el: '#app',
+          data: {
+              files: window.videoFiles,
+              searchTerm: '',
+              isDarkMode: false,
+              utcTime: '',
+              currentVideoTitle: '',
+              showBackToTop: false,
+          },
+          computed: {
+              filteredFiles() {
+                  const searchTerm = this.searchTerm.trim().toLowerCase();
+                  return this.files.filter(file => file.title.toLowerCase().includes(searchTerm));
+              }
+          },
+          methods: {
+              searchVideos() {
+                  // 搜索功能已通过计算属性实现
+              },
+              toggleDarkMode() {
+                  this.isDarkMode = !this.isDarkMode;
+              },
+              updateUTCTime() {
+                  const now = new Date();
+                  this.utcTime = now.toUTCString();
+              },
+              scrollToTop() {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+              },
+              handleScroll() {
+                  this.showBackToTop = window.pageYOffset > 300;
+              },
+              initDPlayers() {
+                  this.$nextTick(() => {
+                      this.files.forEach((file, index) => {
+                          new DPlayer({
+                              container: document.getElementById(`dplayer-${index}`),
+                              video: {
+                                  url: file.path,
+                                  type: file.mimeType
+                              },
+                              preload: 'none'
+                          });
+                      });
+                  });
+              },
+              setCurrentVideo(title) {
+                  this.currentVideoTitle = title;
+              }
+          },
+          mounted() {
+              this.updateUTCTime();
+              setInterval(this.updateUTCTime, 1000);
 
-        .dark-mode-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+              window.addEventListener('scroll', this.handleScroll);
 
-        .dark-mode .dark-mode-toggle {
-            background-color: #fff;
-            color: #333;
-        }
-
-        .back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: rgba(51, 51, 51, 0.7);
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: opacity 0.3s, visibility 0.3s;
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .back-to-top.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .dark-mode .back-to-top {
-            background-color: rgba(255, 255, 255, 0.7);
-            color: #333;
-        }
-
-        .search-container {
-            text-align: center;
-            margin: 20px 0;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .search-input {
-            padding: 10px;
-            width: 300px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.7);
-        }
-
-        .search-btn {
-            padding: 10px 20px;
-            background-color: rgba(51, 51, 51, 0.7);
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-left: 10px;
-        }
-
-        .dark-mode .search-input {
-            background-color: rgba(68, 68, 68, 0.7);
-            color: #fff;
-            border-color: #666;
-        }
-
-        .dark-mode .search-btn {
-            background-color: rgba(102, 102, 102, 0.7);
-        }
-
-        @media (max-width: 767px) {
-            .video-container {
-                max-width: 100%;
-            }
-
-            .main-content {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                margin-left: 0;
-                margin-top: 20px;
-            }
-        }
-    </style></head><body><div id=app :class="{ 'dark-mode': isDarkMode }"><div class=announcement-bar> 这里是用来归档的视频站 </div><div class=navbar><div class=search-container><input type=text v-model=searchTerm placeholder=搜索视频标题 class=search-input @input=searchVideos><button @click=searchVideos class=search-btn>搜索</button></div></div><div id=search-results></div><div class=main-content><div class=video-list><div v-for="(file, index) in filteredFiles" :key=index class=video-container @click=setCurrentVideo(file.title)><h2 class=video-title>{{ file.title }}</h2><div class=dplayer-container><div :id="'dplayer-' + index"></div></div><p>Size: {{ file.size }} bytes | Modified: {{ file.modified }}</p></div></div><div class=sidebar><h3>这是LEl_FENG的B站视频备份站</h3><p>有兴趣可以看看哦~</p><h4>UTC 时间</h4><p>{{ utcTime }}</p><h4>当前播放视频</h4><p>{{ currentVideoTitle }}</p><h4>视频计数</h4><p>显示 {{ filteredFiles.length }} / {{ files.length }} 个视频</p></div></div><button @click=toggleDarkMode class=dark-mode-toggle>切换暗夜模式</button><button @click=scrollToTop class=back-to-top :class="{ 'show': showBackToTop }">返回顶部</button></div><script>
-        window.videoFiles = [{"path": "UP/2B2T CrystalPVP\u670d\u52a1\u5668\u5236\u4f5c\u5b8c\u6bd5\u5ba3\u4f20-p01-16.mp4", "size": 4315227, "modified": "2024-07-05 10:55:11", "type": "video", "mimeType": "video/mp4", "title": "2B2T CrystalPVP\u670d\u52a1\u5668\u5236\u4f5c\u5b8c\u6bd5\u5ba3\u4f20-p01-16"}, {"path": "UP/CS\u8d77\u6e90\u667a\u80fd\u66b4\u529b\u56de\u6eaf\u9884\u5224\u89e3\u6790\uff1f\uff01-p01-16.mp4", "size": 1272093, "modified": "2024-07-05 10:55:04", "type": "video", "mimeType": "video/mp4", "title": "CS\u8d77\u6e90\u667a\u80fd\u66b4\u529b\u56de\u6eaf\u9884\u5224\u89e3\u6790\uff1f\uff01-p01-16"}, {"path": "UP/FDPClient\u306emc521.cn \u5929\u5751 \u914d\u7f6e\u7b80\u4ecb AAC5-p01-16.mp4", "size": 2915523, "modified": "2024-07-05 10:55:03", "type": "video", "mimeType": "video/mp4", "title": "FDPClient\u306emc521.cn \u5929\u5751 \u914d\u7f6e\u7b80\u4ecb AAC5-p01-16"}, {"path": "UP/FDPClient\u306e\u9999\u8349\u8010\u6253\u738b-p01-16.mp4", "size": 5061497, "modified": "2024-07-05 10:55:04", "type": "video", "mimeType": "video/mp4", "title": "FDPClient\u306e\u9999\u8349\u8010\u6253\u738b-p01-16"}, {"path": "UP/IPhoneX\u7684\u52a8\u753b\u5341\u5206\u751a\u81f3\u4e5d\u5206\u597d\u7528-p01-16.mp4", "size": 1720345, "modified": "2024-07-05 10:55:56", "type": "video", "mimeType": "video/mp4", "title": "IPhoneX\u7684\u52a8\u753b\u5341\u5206\u751a\u81f3\u4e5d\u5206\u597d\u7528-p01-16"}, {"path": "UP/MC\u84dd\u51b0\u9ad8\u94c1\u4f4e\u901f\u622a\u505c\u5668 1.0-p01-16.mp4", "size": 4052158, "modified": "2024-07-05 10:54:59", "type": "video", "mimeType": "video/mp4", "title": "MC\u84dd\u51b0\u9ad8\u94c1\u4f4e\u901f\u622a\u505c\u5668 1.0-p01-16"}, {"path": "UP/webp\u4e92\u76f8\u8f6c\u6362\u795e\u5668-p01-16.mp4", "size": 602552, "modified": "2024-07-05 10:55:11", "type": "video", "mimeType": "video/mp4", "title": "webp\u4e92\u76f8\u8f6c\u6362\u795e\u5668-p01-16"}, {"path": "UP/[2b2t.xin] \u9644\u9b54\u53f0\u7981\u4eba\u5854-p01-16.mp4", "size": 2613133, "modified": "2024-07-05 10:58:37", "type": "video", "mimeType": "video/mp4", "title": "[2b2t.xin] \u9644\u9b54\u53f0\u7981\u4eba\u5854-p01-16"}, {"path": "UP/[2b2tcrystal] \u6c34\u6676pvp\u65e5\u5e38-p01-16.mp4", "size": 3317971, "modified": "2024-07-05 10:57:35", "type": "video", "mimeType": "video/mp4", "title": "[2b2tcrystal] \u6c34\u6676pvp\u65e5\u5e38-p01-16"}, {"path": "UP/[2b2t] 5b5t\u9003\u51fa\u91cd\u751f\u70b9\u8bb0\u5f55-p01-16.mp4", "size": 3304570, "modified": "2024-07-05 10:56:10", "type": "video", "mimeType": "video/mp4", "title": "[2b2t] 5b5t\u9003\u51fa\u91cd\u751f\u70b9\u8bb0\u5f55-p01-16"}, {"path": "UP/[2B2T] \u4e0d\u52a1\u6b63\u4e1a\u4e4bxin\u670dtelly\u642d\u8def-p01-16.mp4", "size": 2067936, "modified": "2024-07-05 10:59:31", "type": "video", "mimeType": "video/mp4", "title": "[2B2T] \u4e0d\u52a1\u6b63\u4e1a\u4e4bxin\u670dtelly\u642d\u8def-p01-16"}, {"path": "UP/[2b2t] \u57285b5t\u91cd\u751f\u70b9\u4f7f\u7528baritone\u6316\u91d1-p01-16.mp4", "size": 11626653, "modified": "2024-07-05 10:56:22", "type": "video", "mimeType": "video/mp4", "title": "[2b2t] \u57285b5t\u91cd\u751f\u70b9\u4f7f\u7528baritone\u6316\u91d1-p01-16"}, {"path": "UP/[2B2T] \u5f53\u65b0\u624b\u4f7f\u7528 3ar pingbypass cpvp-p01-16.mp4", "size": 4764176, "modified": "2024-07-05 10:58:39", "type": "video", "mimeType": "video/mp4", "title": "[2B2T] \u5f53\u65b0\u624b\u4f7f\u7528 3ar pingbypass cpvp-p01-16"}, {"path": "UP/[2B2T]\u624b\u673a\u73a92b2t-p01-16.mp4", "size": 5348673, "modified": "2024-07-05 10:56:43", "type": "video", "mimeType": "video/mp4", "title": "[2B2T]\u624b\u673a\u73a92b2t-p01-16"}, {"path": "UP/[2\u6b21\u8865\u6863] \u4e0d\u8981\u4f7f\u7528Vulcan\u53cd\u4f5c\u5f0a-p01-16.mp4", "size": 3832334, "modified": "2024-07-05 10:56:15", "type": "video", "mimeType": "video/mp4", "title": "[2\u6b21\u8865\u6863] \u4e0d\u8981\u4f7f\u7528Vulcan\u53cd\u4f5c\u5f0a-p01-16"}, {"path": "UP/[CPVP]2y2c 3ar \u72c2\u7b11\u7684\u86c7\u7eed\u5199\u6563\u6587-p01-16.mp4", "size": 4373023, "modified": "2024-07-05 10:57:33", "type": "video", "mimeType": "video/mp4", "title": "[CPVP]2y2c 3ar \u72c2\u7b11\u7684\u86c7\u7eed\u5199\u6563\u6587-p01-16"}, {"path": "UP/[CS\u5f00\u7eaa]HVH misslight ft.evol cs1.6-p01-16.mp4", "size": 2775883, "modified": "2024-07-05 10:57:18", "type": "video", "mimeType": "video/mp4", "title": "[CS\u5f00\u7eaa]HVH misslight ft.evol cs1.6-p01-16"}, {"path": "UP/[Fdpclient] ve bapa mineland  intawe antichansi... lao mao woke gude is super!-p01-16.mp4", "size": 2847429, "modified": "2024-07-05 10:55:37", "type": "video", "mimeType": "video/mp4", "title": "[Fdpclient] ve bapa mineland  intawe antichansi... lao mao woke gude is super!-p01-16"}, {"path": "UP/[PVP\u5927\u4f6c] \u8d85\u7ea7\u98de\u4fa0 25.59\u79d2 \u7eff\u73a9 \u901f\u901a Fastbreak-p01-16.mp4", "size": 1421097, "modified": "2024-07-05 10:55:25", "type": "video", "mimeType": "video/mp4", "title": "[PVP\u5927\u4f6c] \u8d85\u7ea7\u98de\u4fa0 25.59\u79d2 \u7eff\u73a9 \u901f\u901a Fastbreak-p01-16"}, {"path": "UP/[\u4e00\u952e\u5f00\u7eaa\u6574\u5408\u5305] Funclient\u4e0b\u8f7d\u9664\u9519\u548c\u4f7f\u7528\u6559\u7a0b-p01-16.mp4", "size": 4127508, "modified": "2024-07-05 10:55:34", "type": "video", "mimeType": "video/mp4", "title": "[\u4e00\u952e\u5f00\u7eaa\u6574\u5408\u5305] Funclient\u4e0b\u8f7d\u9664\u9519\u548c\u4f7f\u7528\u6559\u7a0b-p01-16"}, {"path": "UP/[\u52a0\u58f3]\u7ed9\u7a0b\u5e8f\u52a0\u58f3-p01-16.mp4", "size": 2022151, "modified": "2024-07-05 10:56:53", "type": "video", "mimeType": "video/mp4", "title": "[\u52a0\u58f3]\u7ed9\u7a0b\u5e8f\u52a0\u58f3-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] Blocksmc\u4f46\u662f\u5ba2\u670d\u6b63\u5728\u7761\u89c9\u800c\u6211\u6b63\u5728\u6478\u9c7c-p01-16.mp4", "size": 4763045, "modified": "2024-07-05 10:59:42", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] Blocksmc\u4f46\u662f\u5ba2\u670d\u6b63\u5728\u7761\u89c9\u800c\u6211\u6b63\u5728\u6478\u9c7c-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] Blocksmc\u5ba3\u4f20\u7247-p01-16.mp4", "size": 3054873, "modified": "2024-07-05 11:00:24", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] Blocksmc\u5ba3\u4f20\u7247-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] FDPClient\u5feb\u901f\u56de\u8840HVH\u4eab\u53d7\u8005-p01-16.mp4", "size": 3164756, "modified": "2024-07-05 10:59:30", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] FDPClient\u5feb\u901f\u56de\u8840HVH\u4eab\u53d7\u8005-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] [LifeBoat] \u57fa\u5ca9\u7248\u80cc\u8d77\u72c2\u7b11\u7684\u86c7\u5199\u300a\u98de\u9c7c\u68a6\u300b-p01-16.mp4", "size": 6198269, "modified": "2024-07-05 10:59:45", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] [LifeBoat] \u57fa\u5ca9\u7248\u80cc\u8d77\u72c2\u7b11\u7684\u86c7\u5199\u300a\u98de\u9c7c\u68a6\u300b-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] [lifeboat] \u624b\u673a\u57fa\u5ca9\u7248\u7ed5\u8d77\u6765\u771f\u5bb9\u6613-p01-16.mp4", "size": 5601631, "modified": "2024-07-05 11:00:15", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] [lifeboat] \u624b\u673a\u57fa\u5ca9\u7248\u7ed5\u8d77\u6765\u771f\u5bb9\u6613-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa] \u770b\u5230VAPE\uff0c\u4e0d\u4f1a\u518d\u6d41\u773c\u6cea Blocksmc FakeVape-p01-16.mp4", "size": 5864134, "modified": "2024-07-05 10:59:51", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa] \u770b\u5230VAPE\uff0c\u4e0d\u4f1a\u518d\u6d41\u773c\u6cea Blocksmc FakeVape-p01-16"}, {"path": "UP/[\u5a31\u4e50\u5f00\u7eaa]HVH\u771f\u7684\u662f\u592a\u597d\u73a9\u5566\uff01-p01-16.mp4", "size": 1730867, "modified": "2024-07-05 10:57:07", "type": "video", "mimeType": "video/mp4", "title": "[\u5a31\u4e50\u5f00\u7eaa]HVH\u771f\u7684\u662f\u592a\u597d\u73a9\u5566\uff01-p01-16"}, {"path": "UP/[\u6211\u7684\u4e16\u754c\u670d\u52a1\u5668]\u975e\u5e38\u6cb3\u91cc\u7684minecraft\u516c\u76ca\u670d\u52a1\u5668\u7f51\u9875-p01-16.mp4", "size": 2784441, "modified": "2024-07-05 10:59:16", "type": "video", "mimeType": "video/mp4", "title": "[\u6211\u7684\u4e16\u754c\u670d\u52a1\u5668]\u975e\u5e38\u6cb3\u91cc\u7684minecraft\u516c\u76ca\u670d\u52a1\u5668\u7f51\u9875-p01-16"}, {"path": "UP/[\u6298\u817e] IOS\u600e\u4e48\u5bf9BILIBILI\u964d\u7ea7 \u5931\u8d25-p01-16.mp4", "size": 3862169, "modified": "2024-07-05 10:55:39", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e] IOS\u600e\u4e48\u5bf9BILIBILI\u964d\u7ea7 \u5931\u8d25-p01-16"}, {"path": "UP/[\u6298\u817e] \u6211\u7684\u4e16\u754cHMCL \u7f16\u8bd1 \u8fc7\u7a0b-p01-16.mp4", "size": 2281764, "modified": "2024-07-05 10:56:00", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e] \u6211\u7684\u4e16\u754cHMCL \u7f16\u8bd1 \u8fc7\u7a0b-p01-16"}, {"path": "UP/[\u6298\u817e] \u7b14\u8bb0\u672c\u7535\u8111\u62c6\u89e3-p01-16.mp4", "size": 7787945, "modified": "2024-07-05 10:55:51", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e] \u7b14\u8bb0\u672c\u7535\u8111\u62c6\u89e3-p01-16"}, {"path": "UP/[\u6298\u817e]Spacedesk\u6295\u5c4f\u795e\u5668_ win7\u7535\u8111\u8f6c\u624b\u673a\u786c\u4ef6\u52a0\u901f\u5f55\u5c4f\u4e0e\u65e0\u7ebf\u6295\u5c4f-p01-16.mp4", "size": 4982137, "modified": "2024-07-05 10:58:57", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e]Spacedesk\u6295\u5c4f\u795e\u5668_ win7\u7535\u8111\u8f6c\u624b\u673a\u786c\u4ef6\u52a0\u901f\u5f55\u5c4f\u4e0e\u65e0\u7ebf\u6295\u5c4f-p01-16"}, {"path": "UP/[\u6298\u817e]\u4f7f\u7528\u53e4\u8463\u7535\u8111\u5f00\u53d1\u5b89\u5353\u7a0b\u5e8f+Arm\u865a\u62df\u6d4b\u8bd5-p01-16.mp4", "size": 2381722, "modified": "2024-07-05 10:59:07", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e]\u4f7f\u7528\u53e4\u8463\u7535\u8111\u5f00\u53d1\u5b89\u5353\u7a0b\u5e8f+Arm\u865a\u62df\u6d4b\u8bd5-p01-16"}, {"path": "UP/[\u6298\u817e]\u8001\u53e4\u8463\u7535\u8111minecraft Fps\u5e27\u6570\u6027\u80fd\u4f18\u5316\u8bbe\u8ba1\u7a3340\u5e27FPS-p01-16.mp4", "size": 3129027, "modified": "2024-07-05 10:59:15", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e]\u8001\u53e4\u8463\u7535\u8111minecraft Fps\u5e27\u6570\u6027\u80fd\u4f18\u5316\u8bbe\u8ba1\u7a3340\u5e27FPS-p01-16"}, {"path": "UP/[\u6298\u817e\u5b89\u5353\u624b\u673a] \u5f53\u4f60\u5c06\u534e\u4e3a\u624b\u673a\u7684data\u76ee\u5f55\u683c\u5f0f\u5316\u4f1a\u53d1\u751f\u4ec0\u4e48\uff1f-p01-16.mp4", "size": 3499226, "modified": "2024-07-05 10:56:06", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e\u5b89\u5353\u624b\u673a] \u5f53\u4f60\u5c06\u534e\u4e3a\u624b\u673a\u7684data\u76ee\u5f55\u683c\u5f0f\u5316\u4f1a\u53d1\u751f\u4ec0\u4e48\uff1f-p01-16"}, {"path": "UP/[\u6298\u817e\u624b\u673a] \u534e\u4e3a\u624b\u673a\u4e09\u952e\u5f3a\u5237\u5931\u8d25-p01-16.mp4", "size": 688664, "modified": "2024-07-05 10:56:02", "type": "video", "mimeType": "video/mp4", "title": "[\u6298\u817e\u624b\u673a] \u534e\u4e3a\u624b\u673a\u4e09\u952e\u5f3a\u5237\u5931\u8d25-p01-16"}, {"path": "UP/[\u62bd\u8c61]\u523b\u677f\u5370\u8c61-p01-16.mp4", "size": 1896731, "modified": "2024-07-05 10:57:00", "type": "video", "mimeType": "video/mp4", "title": "[\u62bd\u8c61]\u523b\u677f\u5370\u8c61-p01-16"}, {"path": "UP/[\u641e\u7b11] \u6c34\u5f71\u7684\u65b0\u624bJAVADEV\u7684\u73b0\u72b6-p01-16.mp4", "size": 4383133, "modified": "2024-07-05 11:00:55", "type": "video", "mimeType": "video/mp4", "title": "[\u641e\u7b11] \u6c34\u5f71\u7684\u65b0\u624bJAVADEV\u7684\u73b0\u72b6-p01-16"}, {"path": "UP/[\u6574\u6d3b]\u6bd4\u795e\u6865\u642d\u5feb\u7684\u642d\u8def\u65b9\u5f0f-p01-16.mp4", "size": 3394354, "modified": "2024-07-05 10:57:24", "type": "video", "mimeType": "video/mp4", "title": "[\u6574\u6d3b]\u6bd4\u795e\u6865\u642d\u5feb\u7684\u642d\u8def\u65b9\u5f0f-p01-16"}, {"path": "UP/[\u7f51\u7ad9\u642d\u5efa]\u7528\u624b\u673a\u6d4b\u8bd5\u65b0\u7eaa\u72d7\u7ad9\u7684\u517c\u5bb9-p01-16.mp4", "size": 1310562, "modified": "2024-07-05 10:58:38", "type": "video", "mimeType": "video/mp4", "title": "[\u7f51\u7ad9\u642d\u5efa]\u7528\u624b\u673a\u6d4b\u8bd5\u65b0\u7eaa\u72d7\u7ad9\u7684\u517c\u5bb9-p01-16"}, {"path": "UP/[\u860b\u679c\u8d8a\u7344]chimera\u8d8a\u72f1IOS12.5.7\u6210\u529f\uff01-p01-16.mp4", "size": 2857210, "modified": "2024-07-05 10:55:56", "type": "video", "mimeType": "video/mp4", "title": "[\u860b\u679c\u8d8a\u7344]chimera\u8d8a\u72f1IOS12.5.7\u6210\u529f\uff01-p01-16"}, {"path": "UP/[\u8865\u6321]hycraft old bypass config-p01-16.mp4", "size": 2885327, "modified": "2024-07-05 10:57:12", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6321]hycraft old bypass config-p01-16"}, {"path": "UP/[\u8865\u6321]\u5927\u54e5\u73a9cf\u73a9\u7d2f\u4e86 \u73a9\u4e2a\u6211\u7684\u4e16\u754c\u600e\u4e48\u4e86-p01-16.mp4", "size": 4011012, "modified": "2024-07-05 10:57:07", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6321]\u5927\u54e5\u73a9cf\u73a9\u7d2f\u4e86 \u73a9\u4e2a\u6211\u7684\u4e16\u754c\u600e\u4e48\u4e86-p01-16"}, {"path": "UP/[\u8865\u6863] buzz pika bypass-p01-16.mp4", "size": 2198959, "modified": "2024-07-05 10:57:28", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6863] buzz pika bypass-p01-16"}, {"path": "UP/[\u8865\u6863] [2B2T.xin] \u6f5c\u5f71\u76d2\u5237\u7269\u54c1\u9b54\u6539GS-p01-16.mp4", "size": 9484657, "modified": "2024-07-05 10:58:34", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6863] [2B2T.xin] \u6f5c\u5f71\u76d2\u5237\u7269\u54c1\u9b54\u6539GS-p01-16"}, {"path": "UP/[\u8865\u6863]\u3010\u8fdc\u53e4zonecraft\u3011FDP \u7eaa\u72d7 \u914d\u7f6e-p01-16.mp4", "size": 2527480, "modified": "2024-07-05 10:57:40", "type": "video", "mimeType": "video/mp4", "title": "[\u8865\u6863]\u3010\u8fdc\u53e4zonecraft\u3011FDP \u7eaa\u72d7 \u914d\u7f6e-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u5408\u4f5c\u5f00\u7eaa] \u4e09\u4eba\u4f7f\u7528FDP\u51fa\u51fbBMC\u53ea\u9700\u89811.5\u5206\u949f\u5373\u53ef\u7ed3\u675f\u5bf9\u5c40-p01-16.mp4", "size": 7825935, "modified": "2024-07-05 11:00:55", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u5408\u4f5c\u5f00\u7eaa] \u4e09\u4eba\u4f7f\u7528FDP\u51fa\u51fbBMC\u53ea\u9700\u89811.5\u5206\u949f\u5373\u53ef\u7ed3\u675f\u5bf9\u5c40-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u5a31\u4e50\u5f00\u7eaa] KevinCleint\u7ed5\u8fc7PolarAC-p01-16.mp4", "size": 8939682, "modified": "2024-07-05 11:00:34", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u5a31\u4e50\u5f00\u7eaa] KevinCleint\u7ed5\u8fc7PolarAC-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u5a31\u4e50\u5f00\u7eaa] \u4f7f\u7528FDPClient\u8fdb\u5165Blocksmc\u8fdb\u884c\u4e00\u4e2a\u7ed5\u8fc7-p01-16.mp4", "size": 1731819, "modified": "2024-07-05 11:00:15", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u5a31\u4e50\u5f00\u7eaa] \u4f7f\u7528FDPClient\u8fdb\u5165Blocksmc\u8fdb\u884c\u4e00\u4e2a\u7ed5\u8fc7-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u8865\u6863] [\u914d\u7f6e\u7b80\u4ecb] FDPClient\u8fdb\u884cblockdrop\u7684bypass\u505aNCPFLY-Noslow-p01-16.mp4", "size": 3823848, "modified": "2024-07-05 11:00:55", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u8865\u6863] [\u914d\u7f6e\u7b80\u4ecb] FDPClient\u8fdb\u884cblockdrop\u7684bypass\u505aNCPFLY-Noslow-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u8865\u6863] [\u914d\u7f6e\u7b80\u4ecb] Old pika network bypass Full-p01-16.mp4", "size": 6129917, "modified": "2024-07-05 11:01:09", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u8865\u6863] [\u914d\u7f6e\u7b80\u4ecb] Old pika network bypass Full-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u8865\u6863] \u90e8\u5206\u7ed5\u8fc7 mineland\u65e7\u7248\u706b\u795e-p01-16.mp4", "size": 4590707, "modified": "2024-07-05 11:00:23", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u8865\u6863] \u90e8\u5206\u7ed5\u8fc7 mineland\u65e7\u7248\u706b\u795e-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] 3fmc bypass grimac+Matrix+AAC5-p01-16.mp4", "size": 3619917, "modified": "2024-07-05 11:01:00", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] 3fmc bypass grimac+Matrix+AAC5-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] Aug legit\u914d\u7f6e\u5728karhu\u548cGrimAC\u548cSpartan\u548cMatrix\u548cAAC\u548cNCP\u548cHawk\u548cVulcan\u6d4b\u8bd5\u642d\u8def\u548c\u56de\u5f39-p01-16.mp4", "size": 3416939, "modified": "2024-07-05 11:00:08", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] Aug legit\u914d\u7f6e\u5728karhu\u548cGrimAC\u548cSpartan\u548cMatrix\u548cAAC\u548cNCP\u548cHawk\u548cVulcan\u6d4b\u8bd5\u642d\u8def\u548c\u56de\u5f39-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9Blocksmc\u7a7a\u5c9b\u7684NCP\u53cd\u4f5c\u5f0a\u8fdb\u884cBypass-p01-16.mp4", "size": 2823453, "modified": "2024-07-05 11:01:09", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9Blocksmc\u7a7a\u5c9b\u7684NCP\u53cd\u4f5c\u5f0a\u8fdb\u884cBypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] GrimAC\u7684Scaffold+Noslow+Killaura\u7684Bypass-p01-16.mp4", "size": 4999945, "modified": "2024-07-05 11:00:46", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] GrimAC\u7684Scaffold+Noslow+Killaura\u7684Bypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] KevinCleint\u7ed5\u8fc7\u82b1\u96e8\u5ead\u4e00\u6837\u7684GrimAC\u53cd\u4f5c\u5f0a\u7684\u8df3\u8dc3Scaffold-p01-16.mp4", "size": 6937387, "modified": "2024-07-05 11:00:38", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] KevinCleint\u7ed5\u8fc7\u82b1\u96e8\u5ead\u4e00\u6837\u7684GrimAC\u53cd\u4f5c\u5f0a\u7684\u8df3\u8dc3Scaffold-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] KevinClient\u8fdb\u884chvh\u5728coldpvp-p01-16.mp4", "size": 7973187, "modified": "2024-07-05 11:00:39", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] KevinClient\u8fdb\u884chvh\u5728coldpvp-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] Kevin\u5728Zonecraft\u7684grimac\u8fdb\u884c\u4e00\u4e2aBypass-p01-16.mp4", "size": 4414655, "modified": "2024-07-05 11:00:44", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] Kevin\u5728Zonecraft\u7684grimac\u8fdb\u884c\u4e00\u4e2aBypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u4f7f\u7528FDPClient\u5728Blockdrop\u98de\u884c-p01-16.mp4", "size": 5342914, "modified": "2024-07-05 10:59:58", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u4f7f\u7528FDPClient\u5728Blockdrop\u98de\u884c-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u53d1\u5e03\u57fa\u5ca9\u7248lifeboat\u7ed5\u8fc7-p01-16.mp4", "size": 2482486, "modified": "2024-07-05 11:00:12", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u53d1\u5e03\u57fa\u5ca9\u7248lifeboat\u7ed5\u8fc7-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u5bf9\u4f7f\u7528verus\u7684coldpvp\u670d\u52a1\u5668\u8fdb\u884cbypass-p01-16.mp4", "size": 3067450, "modified": "2024-07-05 11:01:04", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u5bf9\u4f7f\u7528verus\u7684coldpvp\u670d\u52a1\u5668\u8fdb\u884cbypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u7ed5\u8fc7Blocksmc-p01-16.mp4", "size": 3599494, "modified": "2024-07-05 11:00:06", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u7ed5\u8fc7Blocksmc-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u8fdb\u5165Madcraft\u8fd9\u4e2a\u4f7f\u7528Vulcan\u7684\u670d\u52a1\u5668\u8fdb\u884cbypass-p01-16.mp4", "size": 6822143, "modified": "2024-07-05 11:01:14", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u8fdb\u5165Madcraft\u8fd9\u4e2a\u4f7f\u7528Vulcan\u7684\u670d\u52a1\u5668\u8fdb\u884cbypass-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7ed5\u8fc7Seksin\u8fd9\u4e2aP2W\u670d\u52a1\u5668\u4f7f\u7528\u65e7\u7248GrimAC-p01-16.mp4", "size": 5576351, "modified": "2024-07-05 10:59:55", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] [\u914d\u7f6e\u7b80\u4ecb] \u7ed5\u8fc7Seksin\u8fd9\u4e2aP2W\u670d\u52a1\u5668\u4f7f\u7528\u65e7\u7248GrimAC-p01-16"}, {"path": "UP/[\u88ab\u9650\u6d41] \u5f00\u88c2\u5927\u7aef\u7ed5\u8fc7GrimAC\u7684Scaffold-p01-16.mp4", "size": 3918046, "modified": "2024-07-05 11:00:15", "type": "video", "mimeType": "video/mp4", "title": "[\u88ab\u9650\u6d41] \u5f00\u88c2\u5927\u7aef\u7ed5\u8fc7GrimAC\u7684Scaffold-p01-16"}, {"path": "UP/[\u89e3BAN] \u5149\u732b\u7528\u5f3a\u5236\u62e8\u53f7\u66ff\u6362\u516c\u7f51IP-p01-16.mp4", "size": 2891208, "modified": "2024-07-05 11:00:01", "type": "video", "mimeType": "video/mp4", "title": "[\u89e3BAN] \u5149\u732b\u7528\u5f3a\u5236\u62e8\u53f7\u66ff\u6362\u516c\u7f51IP-p01-16"}, {"path": "UP/[\u89e3BAN] \u5982\u4f55\u91cd\u542f\u5149\u732b\u66f4\u6362\u516c\u7f51IP-p01-16.mp4", "size": 1567638, "modified": "2024-07-05 11:00:08", "type": "video", "mimeType": "video/mp4", "title": "[\u89e3BAN] \u5982\u4f55\u91cd\u542f\u5149\u732b\u66f4\u6362\u516c\u7f51IP-p01-16"}, {"path": "UP/[\u8bb0\u5f55]\u7b2c\u4e00\u6b21\u5b66\u4f1a\u4f7f\u7528\u7535\u8111OBS\u5f55\u5c4f-p01-16.mp4", "size": 5961783, "modified": "2024-07-05 10:59:27", "type": "video", "mimeType": "video/mp4", "title": "[\u8bb0\u5f55]\u7b2c\u4e00\u6b21\u5b66\u4f1a\u4f7f\u7528\u7535\u8111OBS\u5f55\u5c4f-p01-16"}, {"path": "UP/[\u8d70\u8fd1\u79d1\u5b66] \u8d70\u8fd1IPhone6\u652f\u6301\u300aFaceID\u300b\u79d1\u5b66-p01-16.mp4", "size": 2012789, "modified": "2024-07-05 10:55:39", "type": "video", "mimeType": "video/mp4", "title": "[\u8d70\u8fd1\u79d1\u5b66] \u8d70\u8fd1IPhone6\u652f\u6301\u300aFaceID\u300b\u79d1\u5b66-p01-16"}, {"path": "UP/[\u8de8\u5e73\u53f0]Blocksmc \u624b\u673a\u7aef-p01-16.mp4", "size": 4657198, "modified": "2024-07-05 10:57:14", "type": "video", "mimeType": "video/mp4", "title": "[\u8de8\u5e73\u53f0]Blocksmc \u624b\u673a\u7aef-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] fdpclient blocksmc-p01-16.mp4", "size": 1878144, "modified": "2024-07-05 10:59:02", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] fdpclient blocksmc-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9GrimAC\u7684\u7ed5\u8fc7-p01-16.mp4", "size": 3394751, "modified": "2024-07-05 10:59:37", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9GrimAC\u7684\u7ed5\u8fc7-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9\u4f7f\u7528NCP\u7684Blocksmc\u8fdb\u884cBypass-p01-16.mp4", "size": 6058154, "modified": "2024-07-05 11:01:18", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] FDPClient\u5bf9\u4f7f\u7528NCP\u7684Blocksmc\u8fdb\u884cBypass-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] mineland\u670d\u52a1\u5668intave\u7ed5\u8fc7LB+-p01-16.mp4", "size": 3729336, "modified": "2024-07-05 10:56:27", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] mineland\u670d\u52a1\u5668intave\u7ed5\u8fc7LB+-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] \u5ba2\u670d\u5c01\u53f7 coldpvp verus fdpclient-p01-16.mp4", "size": 6135829, "modified": "2024-07-05 10:59:09", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] \u5ba2\u670d\u5c01\u53f7 coldpvp verus fdpclient-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u7ed5\u8fc7Blocksmc-p01-16.mp4", "size": 4382525, "modified": "2024-07-05 10:59:36", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb] \u7eaa\u72d7\u4f7f\u7528FDPClient\u7ed5\u8fc7Blocksmc-p01-16"}, {"path": "UP/[\u914d\u7f6e\u7b80\u4ecb]Kevin\u5ba2\u6237\u7aef GrimAC+Matrix \u65e0\u9650\u642d\u8def-p01-16.mp4", "size": 14879713, "modified": "2024-07-05 10:59:02", "type": "video", "mimeType": "video/mp4", "title": "[\u914d\u7f6e\u7b80\u4ecb]Kevin\u5ba2\u6237\u7aef GrimAC+Matrix \u65e0\u9650\u642d\u8def-p01-16"}, {"path": "UP/_\u786c\u76d8\u6a21\u62df\u5668_-p01-16.mp4", "size": 1685407, "modified": "2024-07-05 10:54:28", "type": "video", "mimeType": "video/mp4", "title": "_\u786c\u76d8\u6a21\u62df\u5668_-p01-16"}, {"path": "UP/\u300a\u72c2\u7b11\u7684\u86c7\u5c06\u5199\u6563\u6587\u300b-p01-16.mp4", "size": 5673810, "modified": "2024-07-05 10:54:55", "type": "video", "mimeType": "video/mp4", "title": "\u300a\u72c2\u7b11\u7684\u86c7\u5c06\u5199\u6563\u6587\u300b-p01-16"}, {"path": "UP/\u4f60\u53ea\u9700\u6309\u4e0bW\u952e\uff0c\u63a5\u4e0b\u6765\u4ea4\u7ed9VAPE\uff01-p01-16.mp4", "size": 7039485, "modified": "2024-07-05 10:55:35", "type": "video", "mimeType": "video/mp4", "title": "\u4f60\u53ea\u9700\u6309\u4e0bW\u952e\uff0c\u63a5\u4e0b\u6765\u4ea4\u7ed9VAPE\uff01-p01-16"}, {"path": "UP/\u4f7f\u7528NIX\u5728CSGO\u6253\u6b7b\u50f5\u5c38-p01-16.mp4", "size": 4928192, "modified": "2024-07-05 10:54:38", "type": "video", "mimeType": "video/mp4", "title": "\u4f7f\u7528NIX\u5728CSGO\u6253\u6b7b\u50f5\u5c38-p01-16"}, {"path": "UP/\u5168\u90e8\u90fd\u662f\u5b9e\u529bOK\uff1f-p01-16.mp4", "size": 1207361, "modified": "2024-07-05 10:54:31", "type": "video", "mimeType": "video/mp4", "title": "\u5168\u90e8\u90fd\u662f\u5b9e\u529bOK\uff1f-p01-16"}, {"path": "UP/\u534e\u4e3a\u9e92\u9e9f\u7684960\u89e3\u9664\u6e29\u63a7\u540e\u73a9\u6211\u7684\u4e16\u754c\u7684\u8868\u73b0-p01-16.mp4", "size": 3315153, "modified": "2024-07-05 10:55:32", "type": "video", "mimeType": "video/mp4", "title": "\u534e\u4e3a\u9e92\u9e9f\u7684960\u89e3\u9664\u6e29\u63a7\u540e\u73a9\u6211\u7684\u4e16\u754c\u7684\u8868\u73b0-p01-16"}, {"path": "UP/\u53cd\u4f5c\u5f0a\u8bef\u5224\u6d4b\u8bd5-p01-16.mp4", "size": 2592963, "modified": "2024-07-05 10:55:23", "type": "video", "mimeType": "video/mp4", "title": "\u53cd\u4f5c\u5f0a\u8bef\u5224\u6d4b\u8bd5-p01-16"}, {"path": "UP/\u56fe\u5427\u5de5\u5177\u7bb1\u5b98\u7f51\u590d\u523b-p01-16.mp4", "size": 1280351, "modified": "2024-07-05 10:55:00", "type": "video", "mimeType": "video/mp4", "title": "\u56fe\u5427\u5de5\u5177\u7bb1\u5b98\u7f51\u590d\u523b-p01-16"}, {"path": "UP/\u5730\u94c1\u9003\u751f\u6709\u771f\u6b63\u7262\u5927\u8981\u8098\u51fb\u5916\u56fd\u4eba-p01-16.mp4", "size": 8204222, "modified": "2024-07-05 10:54:36", "type": "video", "mimeType": "video/mp4", "title": "\u5730\u94c1\u9003\u751f\u6709\u771f\u6b63\u7262\u5927\u8981\u8098\u51fb\u5916\u56fd\u4eba-p01-16"}, {"path": "UP/\u5c1d\u8bd5\u7ed9\u5c0f\u7c73mini\u8def\u7531\u5668\u7684\u6838\u5fc3cpu\u8fdb\u884c\u4e00\u4e2a\u5c0f\u5c0f\u7684\u8d85\u9891-p01-16.mp4", "size": 1993934, "modified": "2024-07-05 10:55:30", "type": "video", "mimeType": "video/mp4", "title": "\u5c1d\u8bd5\u7ed9\u5c0f\u7c73mini\u8def\u7531\u5668\u7684\u6838\u5fc3cpu\u8fdb\u884c\u4e00\u4e2a\u5c0f\u5c0f\u7684\u8d85\u9891-p01-16"}, {"path": "UP/\u6211\u7684\u4e16\u754c POT PVP FDP Verus Config\u914d\u7f6e\u7b80\u4ecb-p01-16.mp4", "size": 6925181, "modified": "2024-07-05 10:54:58", "type": "video", "mimeType": "video/mp4", "title": "\u6211\u7684\u4e16\u754c POT PVP FDP Verus Config\u914d\u7f6e\u7b80\u4ecb-p01-16"}, {"path": "UP/\u6253\u4e86\u4e4b\u540e\u5f53\u7136\u8981\u7206\u91d1\u5e01\u4e86-p01-16.mp4", "size": 8676217, "modified": "2024-07-05 10:54:47", "type": "video", "mimeType": "video/mp4", "title": "\u6253\u4e86\u4e4b\u540e\u5f53\u7136\u8981\u7206\u91d1\u5e01\u4e86-p01-16"}, {"path": "UP/\u6253\u672b\u5f71\u9f99\u7528\u67aa\u5c31\u884c\u4e86\uff01-p01-16.mp4", "size": 12093199, "modified": "2024-07-05 10:54:43", "type": "video", "mimeType": "video/mp4", "title": "\u6253\u672b\u5f71\u9f99\u7528\u67aa\u5c31\u884c\u4e86\uff01-p01-16"}, {"path": "UP/\u6709\u6846\u4f60\u4e0d\u6253\uff1f-p01-16.mp4", "size": 2408016, "modified": "2024-07-05 10:54:49", "type": "video", "mimeType": "video/mp4", "title": "\u6709\u6846\u4f60\u4e0d\u6253\uff1f-p01-16"}, {"path": "UP/\u6709\u6846\u6211\u6253\u554a-p01-16.mp4", "size": 4205801, "modified": "2024-07-05 10:54:47", "type": "video", "mimeType": "video/mp4", "title": "\u6709\u6846\u6211\u6253\u554a-p01-16"}, {"path": "UP/\u671f\u672b\u8003\u8bd5\u524d\u4f7f\u7528FDPClient\u6e38\u73a9mineland\u670d\u52a1\u5668-p01-16.mp4", "size": 5753977, "modified": "2024-07-05 10:55:28", "type": "video", "mimeType": "video/mp4", "title": "\u671f\u672b\u8003\u8bd5\u524d\u4f7f\u7528FDPClient\u6e38\u73a9mineland\u670d\u52a1\u5668-p01-16"}, {"path": "UP/\u786c\u76d8\u6570\u636e\u6062\u590d\u4f7f\u7528PC-3000\u8bfb\u53d6\u4e2d-p01-16.mp4", "size": 1327344, "modified": "2024-07-05 10:54:29", "type": "video", "mimeType": "video/mp4", "title": "\u786c\u76d8\u6570\u636e\u6062\u590d\u4f7f\u7528PC-3000\u8bfb\u53d6\u4e2d-p01-16"}, {"path": "UP/\u7eaa\u72d7\u5bfc\u822a\u7f51\u6d4b\u8bd5-p01-16.mp4", "size": 619816, "modified": "2024-07-05 10:55:14", "type": "video", "mimeType": "video/mp4", "title": "\u7eaa\u72d7\u5bfc\u822a\u7f51\u6d4b\u8bd5-p01-16"}, {"path": "UP/\u8fd8\u7528\u5200\u5417\u65f6\u4ee3\u53d8\u4e86\u8001\u5f1f\uff01-p01-16.mp4", "size": 5459540, "modified": "2024-07-05 10:54:42", "type": "video", "mimeType": "video/mp4", "title": "\u8fd8\u7528\u5200\u5417\u65f6\u4ee3\u53d8\u4e86\u8001\u5f1f\uff01-p01-16"}, {"path": "UP/\u8fd9\u662f\u4e00\u4e2a\u53ef\u4ee5\u722c\u53d6\u6b63\u7248\u73a9\u5bb6\u76ae\u80a4\u7684\u7a0b\u5e8f\uff1f\uff01-p01-16.mp4", "size": 1018873, "modified": "2024-07-05 10:55:13", "type": "video", "mimeType": "video/mp4", "title": "\u8fd9\u662f\u4e00\u4e2a\u53ef\u4ee5\u722c\u53d6\u6b63\u7248\u73a9\u5bb6\u76ae\u80a4\u7684\u7a0b\u5e8f\uff1f\uff01-p01-16"}, {"path": "UP/\u914d\u7f6e\u7f51\u7ad9\u66f4\u65b0-p01-16.mp4", "size": 4390797, "modified": "2024-07-05 10:55:21", "type": "video", "mimeType": "video/mp4", "title": "\u914d\u7f6e\u7f51\u7ad9\u66f4\u65b0-p01-16"}, {"path": "UP/\u96f7\u950bAPI\u63a5\u53e3\u7ad9\u4e0a\u7ebf\u5566, \u6b22\u8fce\u5927\u5bb6\u4f7f\u7528~~-p01-16.mp4", "size": 1327298, "modified": "2024-07-05 10:54:50", "type": "video", "mimeType": "video/mp4", "title": "\u96f7\u950bAPI\u63a5\u53e3\u7ad9\u4e0a\u7ebf\u5566, \u6b22\u8fce\u5927\u5bb6\u4f7f\u7528~~-p01-16"}];
-
-        new Vue({
-            el: '#app',
-            data: {
-                files: window.videoFiles,
-                searchTerm: '',
-                isDarkMode: false,
-                utcTime: '',
-                currentVideoTitle: '',
-                showBackToTop: false,
-            },
-            computed: {
-                filteredFiles() {
-                    const searchTerm = this.searchTerm.trim().toLowerCase();
-                    return this.files.filter(file => file.title.toLowerCase().includes(searchTerm));
-                }
-            },
-            methods: {
-                searchVideos() {
-                    // 搜索功能已通过计算属性实现
-                },
-                toggleDarkMode() {
-                    this.isDarkMode = !this.isDarkMode;
-                },
-                updateUTCTime() {
-                    const now = new Date();
-                    this.utcTime = now.toUTCString();
-                },
-                scrollToTop() {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                },
-                handleScroll() {
-                    this.showBackToTop = window.pageYOffset > 300;
-                },
-                initDPlayers() {
-                    this.$nextTick(() => {
-                        this.files.forEach((file, index) => {
-                            new DPlayer({
-                                container: document.getElementById(`dplayer-${index}`),
-                                video: {
-                                    url: file.path,
-                                    type: file.mimeType
-                                },
-                                preload: 'none'
-                            });
-                        });
-                    });
-                },
-                setCurrentVideo(title) {
-                    this.currentVideoTitle = title;
-                }
-            },
-            mounted() {
-                this.updateUTCTime();
-                setInterval(this.updateUTCTime, 1000);
-
-                window.addEventListener('scroll', this.handleScroll);
-
-                this.initDPlayers();
-            },
-            beforeDestroy() {
-                window.removeEventListener('scroll', this.handleScroll);
-            }
-        });
+              this.initDPlayers();
+          },
+          beforeDestroy() {
+              window.removeEventListener('scroll', this.handleScroll);
+          }
+      });
     </script></body></html>
