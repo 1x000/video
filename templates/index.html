@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-  <head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>雷锋视频归档</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/mdi.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css"/>
+    <link href="https://cdn.muicss.com/mui-0.10.3/css/mui.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.js"></script>
+    <script src="https://cdn.muicss.com/mui-0.10.3/js/mui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/polyfill@7.12.1/dist/polyfill.min.js"></script>
     <style>
       body {
         background-image: url("https://cdn.xpdbk.com/gh/1x000/zdzy/tp/246223.jpg");
         background-size: cover;
         background-attachment: fixed;
-        padding-top: 56px;
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
       .dark-mode {
         background-color: #333;
         color: #fff;
+      }
+      .dark-mode .mui-panel {
+        background-color: #222;
+        color: #eee;
       }
       .video-container {
         transition: transform 0.3s ease;
@@ -24,23 +32,31 @@
       .video-container:hover {
         transform: translateY(-5px);
       }
+
+      /* Hide the sidebar initially */
       .sidebar {
         height: 100vh;
         width: 250px;
         position: fixed;
         top: 0;
-        right: 0; /* 将侧边栏定位到右边 */
-        transition: right 0.3s ease-in-out;
+        right: 0;
+        transform: translateX(250px); /* Initially hidden */
+        transition: transform 0.3s ease-in-out;
         z-index: 1030;
         overflow-y: auto;
+        background-color: rgba(255, 255, 255, 0.9);
       }
+
+      /* Show sidebar when open */
       .sidebar.open {
-        right: -250px; /* 打开时隐藏侧边栏 */
+        transform: translateX(0);
       }
-      .dark-mode-toggle, .back-to-top {
+
+      .dark-mode-toggle,
+      .back-to-top {
         position: fixed;
         right: 20px;
-        z-index: 1020;
+        z-index: 1040;
       }
       .dark-mode-toggle {
         top: 70px;
@@ -48,163 +64,200 @@
       .back-to-top {
         bottom: 20px;
       }
+
+      /* Adjust main content padding based on screen size */
       .main-content {
-        padding-right: 250px; /* 为侧边栏预留空间 */
+        padding-right: 20px; /* Default padding */
+        transition: padding-right 0.3s ease-in-out;
+      }
+
+      @media (min-width: 768px) {
+        .main-content {
+          padding-right: 280px; /* Increased padding when sidebar is open */
+        }
+        .sidebar {
+          transform: translateX(0); /* Show sidebar by default on larger screens */
+        }
       }
     </style>
-  </head>
-
-  <body>
-    <div id="app" :class="{ 'dark-mode': isDarkMode }">
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">雷锋视频归档</a>
-          <button class="navbar-toggler" type="button" @click="toggleSidebar">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </div>
-      </nav>
-
-      <div class="main-content">
-        <div class="container mt-4">
-          <div class="row" id="video-list">
-            <div v-for="(file, index) in displayedFiles" :key="index" class="col-md-6 col-lg-4 mb-4">
-              <div class="card video-container" @click="setCurrentVideo(file.title)">
-                <div class="card-body">
-                  <h5 class="card-title">{% raw %}{{ file.title }}{% endraw %}</h5>
-                  <div class="dplayer-container">
-                    <div :id="'dplayer-' + index"></div>
-                  </div>
-                  <p class="card-text">
-                    Size: {% raw %}{{ file.size }}{% endraw %} bytes | Modified: {% raw %}{{ file.modified }}{% endraw %}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div :class="['sidebar', 'bg-light', { 'open': isSidebarOpen }]">
-        <div class="p-3">
-          <button type="button" class="btn-close float-end" @click="toggleSidebar"></button>
-          <h3>这是LEl_FENG的B站视频备份站</h3>
-          <p>有兴趣可以看看哦~</p>
-          <div class="mb-3">
-            <a href="#" class="btn btn-outline-primary btn-sm me-2">首页</a>
-            <a href="#" class="btn btn-outline-primary btn-sm me-2">关于</a>
-            <a href="#" class="btn btn-outline-primary btn-sm">联系我们</a>
-          </div>
-          <div class="mb-3">
-            <input type="text" v-model="searchTerm" @input="searchVideos" class="form-control mb-2" placeholder="搜索视频标题">
-            <button @click="searchVideos" class="btn btn-primary">搜索</button>
-          </div>
-          <h4>UTC 时间</h4>
-          <p>{% raw %}{{ utcTime }}{% endraw %}</p>
-          <h4>当前播放视频</h4>
-          <p>{% raw %}{{ currentVideoTitle }}{% endraw %}</p>
-          <h4>视频计数</h4>
-          <p>
-            显示 {% raw %}{{ displayedFiles.length }}{% endraw %} / {% raw %}{{ filteredFiles.length }}{% endraw %} 个视频
-          </p>
-          <a href="https://icp.gov.moe/?keyword=20240290" target="_blank">萌ICP备20240290号</a>
-        </div>
-      </div>
-
-      <button @click="toggleDarkMode" class="btn btn-secondary dark-mode-toggle">
-        切换暗夜模式
-      </button>
-
-      <button v-show="showBackToTop" @click="scrollToTop" class="btn btn-primary back-to-top">
-        返回顶部
-      </button>
+</head>
+<body>
+<div id="app" :class="{ 'dark-mode': isDarkMode }">
+  <header class="mui-appbar mui--z-top">
+    <div class="mui-container">
+      <table width="100%">
+        <tr>
+          <td class="mui--hidden-sm mui--hidden-md mui--hidden-lg">
+            <button class="mui-btn mui-btn--flat mui-js-toggle-sidebar mui--hidden-sm mui--hidden-md mui--hidden-lg" data-target="#sidebar" aria-label="切换侧边栏">
+              <i class="mdi mdi-menu"></i>
+            </button>
+          </td>
+          <td>
+            <h1>雷锋视频归档</h1>
+          </td>
+          <td class="mui--text-right">
+            <input
+                type="text"
+                v-model="searchTerm"
+                @input="searchVideos"
+                class="mui-textfield mui-textfield--float-label"
+                placeholder="搜索视频标题"
+            />
+            <button @click="toggleDarkMode" class="mui-btn mui-btn--flat" aria-label="切换深色模式">
+              <i :class="[isDarkMode ? 'mdi mdi-weather-night' : 'mdi mdi-weather-sunny']"></i>
+            </button>
+          </td>
+        </tr>
+      </table>
     </div>
+  </header>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      window.videoFiles = {{ video_files_json | safe }};
+  <div class="mui-content main-content" :class="{ 'sidebar-open': isSidebarOpen }">
+    <div class="mui-container-fluid">
+      <div class="mui-row" id="video-list">
+        <div v-for="(file, index) in displayedFiles" :key="index" class="mui-col-md-6 mui-col-lg-4 mb-4">
+          <div class="mui-panel video-container" @click="setCurrentVideo(file.title)">
+            <h2 class="mui--text-center">
+              {% raw %}{{ file.title }}{% endraw %}
+            </h2>
+            <div class="dplayer-container">
+              <div :id="'dplayer-' + index"></div>
+            </div>
+            <p class="mui--text-center">
+              Size: {% raw %}{{ file.size }}{% endraw %} bytes | Modified:
+              {% raw %}{{ file.modified }}{% endraw %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      new Vue({
-        el: '#app',
-        data: {
-          files: window.videoFiles,
-          searchTerm: '',
-          isDarkMode: false,
-          utcTime: '',
-          currentVideoTitle: '',
-          showBackToTop: false,
-          isSidebarOpen: false,
-          displayedFiles: [],
-          pageSize: 10,
-          currentPage: 1,
-        },
-        computed: {
-          filteredFiles() {
-            const searchTerm = this.searchTerm.trim().toLowerCase();
-            return this.files.filter(file => file.title.toLowerCase().includes(searchTerm));
-          }
-        },
-        methods: {
-          searchVideos() {
-            this.currentPage = 1;
-            this.displayedFiles = [];
-            this.loadMoreVideos();
-          },
-          toggleDarkMode() {
-            this.isDarkMode = !this.isDarkMode;
-          },
-          updateUTCTime() {
-            const now = new Date();
-            this.utcTime = now.toUTCString();
-          },
-          scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          },
-          handleScroll() {
-            this.showBackToTop = window.pageYOffset > 300;
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-              this.loadMoreVideos();
-            }
-          },
-          initDPlayers() {
-            this.$nextTick(() => {
-              this.displayedFiles.forEach((file, index) => {
-                new DPlayer({
-                  container: document.getElementById(`dplayer-${index}`),
-                  video: {
-                    url: file.path,
-                    type: file.mimeType
-                  },
-                  preload: 'none'
-                });
-              });
-            });
-          },
-          setCurrentVideo(title) {
-            this.currentVideoTitle = title;
-          },
-          toggleSidebar() {
-            this.isSidebarOpen = !this.isSidebarOpen;
-          },
-          loadMoreVideos() {
-            const start = (this.currentPage - 1) * this.pageSize;
-            const end = start + this.pageSize;
-            const newVideos = this.filteredFiles.slice(start, end);
-            this.displayedFiles = [...this.displayedFiles, ...newVideos];
-            this.currentPage++;
-            this.initDPlayers();
-          }
-        },
-        mounted() {
-          this.updateUTCTime();
-          setInterval(this.updateUTCTime, 1000);
-          window.addEventListener('scroll', this.handleScroll);
+  <aside id="sidebar" class="mui--z-1 mui-off-canvas-right sidebar">
+    <div class="mui-off-canvas-header">
+      <button type="button" class="mui-btn mui-btn--flat mui-js-toggle-sidebar" data-target="#sidebar">
+        <i class="mdi mdi-close"></i>
+      </button>
+      <h3>这是LEl_FENG的B站视频备份站</h3>
+    </div>
+    <div class="mui-off-canvas-body">
+      <p>有兴趣可以看看哦~</p>
+      <div class="mui-divider"></div>
+      <h4>UTC 时间</h4>
+      <p>{% raw %}{{ utcTime }}{% endraw %}</p>
+      <div class="mui-divider"></div>
+      <h4>当前播放视频</h4>
+      <p>{% raw %}{{ currentVideoTitle }}{% endraw %}</p>
+      <div class="mui-divider"></div>
+      <h4>视频计数</h4>
+      <p>
+        显示 {% raw %}{{ displayedFiles.length }}{% endraw %} / {% raw %}{{
+        filteredFiles.length }}{% endraw %} 个视频
+      </p>
+      <div class="mui-divider"></div>
+      <a href="https://icp.gov.moe/?keyword=20240290" target="_blank">萌ICP备20240290号</a>
+    </div>
+  </aside>
+
+  <button @click="scrollToTop" v-show="showBackToTop" class="mui-btn mui-btn--fab mui-btn--primary back-to-top" aria-label="回到顶部">
+    <i class="mdi mdi-arrow-up"></i>
+  </button>
+</div>
+
+<script>
+  window.videoFiles = {{ video_files_json | safe }};
+
+  new Vue({
+    el: '#app',
+    data: function() {
+      return {
+        files: window.videoFiles,
+        searchTerm: '',
+        isDarkMode: false,
+        utcTime: '',
+        currentVideoTitle: '',
+        showBackToTop: false,
+        isSidebarOpen: false,
+        displayedFiles: [],
+        pageSize: 10,
+        currentPage: 1,
+      };
+    },
+    computed: {
+      filteredFiles: function() {
+        var searchTerm = this.searchTerm.trim().toLowerCase();
+        return this.files.filter(function(file) {
+          return file.title.toLowerCase().indexOf(searchTerm) !== -1;
+        });
+      }
+    },
+    methods: {
+      searchVideos: function() {
+        this.currentPage = 1;
+        this.displayedFiles = [];
+        this.loadMoreVideos();
+      },
+      toggleDarkMode: function() {
+        this.isDarkMode = !this.isDarkMode;
+      },
+      updateUTCTime: function() {
+        var now = new Date();
+        this.utcTime = now.toUTCString();
+      },
+      scrollToTop: function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+      handleScroll: function() {
+        this.showBackToTop = window.pageYOffset > 300;
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
           this.loadMoreVideos();
-        },
-        beforeDestroy() {
-          window.removeEventListener('scroll', this.handleScroll);
         }
-      });
-    </script>
-  </body>
+      },
+      initDPlayers: function() {
+        var self = this;
+        this.$nextTick(function() {
+          self.displayedFiles.forEach(function(file, index) {
+            new DPlayer({
+              container: document.getElementById('dplayer-' + index),
+              video: {
+                url: file.path,
+                type: file.mimeType
+              },
+              preload: 'none'
+            });
+          });
+        });
+      },
+      setCurrentVideo: function(title) {
+        this.currentVideoTitle = title;
+      },
+      toggleSidebar: function() {
+        this.isSidebarOpen = !this.isSidebarOpen;
+        var sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('open');
+      },
+      loadMoreVideos: function() {
+        var start = (this.currentPage - 1) * this.pageSize;
+        var end = start + this.pageSize;
+        var newVideos = this.filteredFiles.slice(start, end);
+        this.displayedFiles = this.displayedFiles.concat(newVideos);
+        this.currentPage++;
+        this.initDPlayers();
+      }
+    },
+    mounted: function() {
+      this.updateUTCTime();
+      var self = this;
+      setInterval(function() {
+        self.updateUTCTime();
+      }, 1000);
+      window.addEventListener('scroll', this.handleScroll);
+      this.loadMoreVideos();
+    },
+    beforeDestroy: function() {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
+  });
+</script>
+</body>
 </html>

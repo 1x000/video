@@ -50,8 +50,14 @@ def generate_file_info_list(directory):
 
 # 渲染模板并混淆HTML和JavaScript
 def render_template(files):
+    # 获取前10个视频作为初始显示
+    displayed_videos = files[:10]  # 可以根据需要调整初始显示数量
     video_files_json = json.dumps(files)
-    html = template.render(video_files_json=video_files_json)
+    # 注意此处，直接传递 displayed_videos 
+    html = template.render(
+        video_files_json=video_files_json,
+        displayed_videos=displayed_videos 
+    )
     minified_html = minify(html, remove_comments=True, remove_empty_space=True, remove_all_empty_space=True)
     return minified_html
 
