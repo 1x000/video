@@ -1,263 +1,410 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
     <title>雷锋视频归档</title>
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/mdi.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css"/>
-    <link href="https://cdn.muicss.com/mui-0.10.3/css/mui.min.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 引入 DPlayer 的样式文件 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css"
+    />
+    <!-- 引入 Vue.js 和 DPlayer 的 JavaScript 文件 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.js"></script>
-    <script src="https://cdn.muicss.com/mui-0.10.3/js/mui.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@babel/polyfill@7.12.1/dist/polyfill.min.js"></script>
     <style>
+      /* 保持原有的样式不变 */
       body {
+        transition: background-color 0.3s ease;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
         background-image: url("https://cdn.xpdbk.com/gh/1x000/zdzy/tp/246223.jpg");
         background-size: cover;
         background-attachment: fixed;
-        transition: background-color 0.3s ease, color 0.3s ease;
       }
+
+      /* 定义暗模式下的样式 */
       .dark-mode {
         background-color: #333;
         color: #fff;
       }
-      .dark-mode .mui-panel {
-        background-color: #222;
-        color: #eee;
+
+      /* 公告栏样式 */
+      .announcement-bar {
+        background-color: rgba(51, 51, 51, 0.7);
+        color: #fff;
+        padding: 10px;
+        text-align: center;
       }
+
+      /* 导航栏样式 */
+      .navbar {
+        background-color: rgba(34, 34, 34, 0.7);
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+      }
+
+      /* 视频列表样式 */
+      .video-list {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 20px;
+        flex: 1;
+        justify-content: center;
+      }
+
+      /* 视频容器样式 */
       .video-container {
-        transition: transform 0.3s ease;
+        flex: 0 0 auto;
+        max-width: 320px;
+        margin: 20px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        transition: transform 0.3s;
+        border-radius: 5px;
+        overflow: hidden;
+        background-color: rgba(255, 255, 255, 0.7);
+        color: #333;
       }
+
+      /* 暗模式下的视频容器样式 */
+      .dark-mode .video-container {
+        background-color: rgba(68, 68, 68, 0.7);
+        color: #fff;
+      }
+
+      /* 侧边栏样式 */
+      .sidebar {
+        width: 250px;
+        padding: 20px;
+        background-color: rgba(241, 241, 241, 0.7);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        margin-left: 20px;
+        position: sticky;
+        top: 20px;
+        /* 距离顶部的距离 */
+        max-height: calc(100vh - 40px);
+        /* 最大高度为视口高度减去上下边距 */
+        overflow-y: auto;
+        /* 如果内容过多，允许滚动 */
+      }
+
+      /* 暗模式下的侧边栏样式 */
+      .dark-mode .sidebar {
+        background-color: rgba(68, 68, 68, 0.7);
+        color: #fff;
+      }
+
+      /* 为滚动条添加一些样式（可选） */
+      .sidebar::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .sidebar::-webkit-scrollbar-track {
+        background: rgba(241, 241, 241, 0.3);
+      }
+
+      .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(136, 136, 136, 0.5);
+        border-radius: 5px;
+      }
+
+      /* 暗模式下滚动条的样式 */
+      .dark-mode .sidebar::-webkit-scrollbar-track {
+        background: rgba(68, 68, 68, 0.3);
+      }
+
+      .dark-mode .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(170, 170, 170, 0.5);
+      }
+
+      /* 主内容区域样式 */
+      .main-content {
+        display: flex;
+        padding: 20px;
+      }
+
+      /* 视频容器悬停样式 */
       .video-container:hover {
         transform: translateY(-5px);
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
+          0 12px 40px 0 rgba(0, 0, 0, 0.19);
       }
 
-      /* Hide the sidebar initially */
-      .sidebar {
-        height: 100vh;
-        width: 250px;
-        position: fixed;
-        top: 0;
-        right: 0;
-        transform: translateX(250px); /* Initially hidden */
-        transition: transform 0.3s ease-in-out;
-        z-index: 1030;
-        overflow-y: auto;
-        background-color: rgba(255, 255, 255, 0.9);
+      /* 视频标题样式 */
+      .video-title {
+        text-align: center;
+        margin: 10px 0;
+        font-size: 18px;
+        font-weight: bold;
+        color: inherit;
       }
 
-      /* Show sidebar when open */
-      .sidebar.open {
-        transform: translateX(0);
-      }
-
-      .dark-mode-toggle,
-      .back-to-top {
-        position: fixed;
-        right: 20px;
-        z-index: 1040;
-      }
+      /* 切换暗/亮模式按钮样式 */
       .dark-mode-toggle {
-        top: 70px;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
       }
+
+      /* 暗模式下的切换按钮样式 */
+      .dark-mode .dark-mode-toggle {
+        background-color: #fff;
+        color: #333;
+      }
+
+      /* 返回顶部按钮样式 */
       .back-to-top {
+        position: fixed;
         bottom: 20px;
+        right: 20px;
+        background-color: rgba(51, 51, 51, 0.7);
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: opacity 0.3s, visibility 0.3s;
+        opacity: 0;
+        visibility: hidden;
       }
 
-      /* Adjust main content padding based on screen size */
-      .main-content {
-        padding-right: 20px; /* Default padding */
-        transition: padding-right 0.3s ease-in-out;
+      /* 显示返回顶部按钮时的样式 */
+      .back-to-top.show {
+        opacity: 1;
+        visibility: visible;
       }
 
-      @media (min-width: 768px) {
-        .main-content {
-          padding-right: 280px; /* Increased padding when sidebar is open */
+      /* 暗模式下的返回顶部按钮样式 */
+      .dark-mode .back-to-top {
+        background-color: rgba(255, 255, 255, 0.7);
+        color: #333;
+      }
+
+      /* 搜索框容器样式 */
+      .search-container {
+        text-align: center;
+        margin: 20px 0;
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 10px;
+        border-radius: 5px;
+      }
+
+      /* 搜索输入框样式 */
+      .search-input {
+        padding: 10px;
+        width: 300px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: rgba(255, 255, 255, 0.7);
+      }
+
+      /* 暗模式下的搜索输入框样式 */
+      .dark-mode .search-input {
+        background-color: rgba(68, 68, 68, 0.7);
+        color: #fff;
+        border-color: #666;
+      }
+
+      /* 搜索按钮样式 */
+      .search-btn {
+        padding: 10px 20px;
+        background-color: rgba(51, 51, 51, 0.7);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-left: 10px;
+      }
+
+      /* 暗模式下的搜索按钮样式 */
+      .dark-mode .search-btn {
+        background-color: rgba(102, 102, 102, 0.7);
+      }
+
+      /* 移动端响应式样式 */
+      @media (max-width: 767px) {
+        .video-container {
+          max-width: 100%;
         }
+
+        .main-content {
+          flex-direction: column;
+        }
+
         .sidebar {
-          transform: translateX(0); /* Show sidebar by default on larger screens */
+          width: 100%;
+          margin-left: 0;
+          margin-top: 20px;
         }
       }
     </style>
-</head>
-<body>
-<div id="app" :class="{ 'dark-mode': isDarkMode }">
-  <header class="mui-appbar mui--z-top">
-    <div class="mui-container">
-      <table width="100%">
-        <tr>
-          <td class="mui--hidden-sm mui--hidden-md mui--hidden-lg">
-            <button class="mui-btn mui-btn--flat mui-js-toggle-sidebar mui--hidden-sm mui--hidden-md mui--hidden-lg" data-target="#sidebar" aria-label="切换侧边栏">
-              <i class="mdi mdi-menu"></i>
-            </button>
-          </td>
-          <td>
-            <h1>雷锋视频归档</h1>
-          </td>
-          <td class="mui--text-right">
-            <input
-                type="text"
-                v-model="searchTerm"
-                @input="searchVideos"
-                class="mui-textfield mui-textfield--float-label"
-                placeholder="搜索视频标题"
-            />
-            <button @click="toggleDarkMode" class="mui-btn mui-btn--flat" aria-label="切换深色模式">
-              <i :class="[isDarkMode ? 'mdi mdi-weather-night' : 'mdi mdi-weather-sunny']"></i>
-            </button>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </header>
+  </head>
 
-  <div class="mui-content main-content" :class="{ 'sidebar-open': isSidebarOpen }">
-    <div class="mui-container-fluid">
-      <div class="mui-row" id="video-list">
-        <div v-for="(file, index) in displayedFiles" :key="index" class="mui-col-md-6 mui-col-lg-4 mb-4">
-          <div class="mui-panel video-container" @click="setCurrentVideo(file.title)">
-            <h2 class="mui--text-center">
-              {% raw %}{{ file.title }}{% endraw %}
-            </h2>
+  <body>
+    <div id="app" :class="{ 'dark-mode': isDarkMode }">
+      <!-- 公告栏 -->
+      <div class="announcement-bar">这里是用来归档的视频站</div>
+      <!-- 导航栏 -->
+      <div class="navbar">
+        <div class="search-container">
+          <input
+            type="text"
+            v-model="searchTerm"
+            placeholder="搜索视频标题"
+            class="search-input"
+            @input="searchVideos"
+          />
+          <button @click="searchVideos" class="search-btn">搜索</button>
+        </div>
+      </div>
+      <div id="search-results"></div>
+      <div class="main-content">
+        <!-- 视频列表 -->
+        <div class="video-list">
+          <div
+            v-for="(file, index) in filteredFiles"
+            :key="index"
+            class="video-container"
+            @click="setCurrentVideo(file.title)"
+          >
+            <h2 class="video-title">{% raw %}{{ file.title }}{% endraw %}</h2>
             <div class="dplayer-container">
               <div :id="'dplayer-' + index"></div>
             </div>
-            <p class="mui--text-center">
-              Size: {% raw %}{{ file.size }}{% endraw %} bytes | Modified:
-              {% raw %}{{ file.modified }}{% endraw %}
+            <p>
+              Size: {% raw %}{{ file.size }}{% endraw %} bytes | Modified: {%
+              raw %}{{ file.modified }}{% endraw %}
             </p>
           </div>
         </div>
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+          <h3>这是LEl_FENG的B站视频备份站</h3>
+          <p>有兴趣可以看看哦~</p>
+          <h4>UTC 时间</h4>
+          <p>{% raw %}{{ utcTime }}{% endraw %}</p>
+          <h4>当前播放视频</h4>
+          <p>{% raw %}{{ currentVideoTitle }}{% endraw %}</p>
+          <h4>视频计数</h4>
+          <p>
+            显示 {% raw %}{{ filteredFiles.length }}{% endraw %} / {% raw %}{{
+            files.length }}{% endraw %} 个视频
+          </p>
+          <a href="https://icp.gov.moe/?keyword=20240290" target="_blank"
+            >萌ICP备20240290号</a
+          >
+        </div>
       </div>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="mui--z-1 mui-off-canvas-right sidebar">
-    <div class="mui-off-canvas-header">
-      <button type="button" class="mui-btn mui-btn--flat mui-js-toggle-sidebar" data-target="#sidebar">
-        <i class="mdi mdi-close"></i>
+      <!-- 切换暗/亮模式按钮 -->
+      <button @click="toggleDarkMode" class="dark-mode-toggle">
+        切换暗夜模式
       </button>
-      <h3>这是LEl_FENG的B站视频备份站</h3>
+      <!-- 返回顶部按钮 -->
+      <button
+        @click="scrollToTop"
+        class="back-to-top"
+        :class="{ 'show': showBackToTop }"
+      >
+        返回顶部
+      </button>
     </div>
-    <div class="mui-off-canvas-body">
-      <p>有兴趣可以看看哦~</p>
-      <div class="mui-divider"></div>
-      <h4>UTC 时间</h4>
-      <p>{% raw %}{{ utcTime }}{% endraw %}</p>
-      <div class="mui-divider"></div>
-      <h4>当前播放视频</h4>
-      <p>{% raw %}{{ currentVideoTitle }}{% endraw %}</p>
-      <div class="mui-divider"></div>
-      <h4>视频计数</h4>
-      <p>
-        显示 {% raw %}{{ displayedFiles.length }}{% endraw %} / {% raw %}{{
-        filteredFiles.length }}{% endraw %} 个视频
-      </p>
-      <div class="mui-divider"></div>
-      <a href="https://icp.gov.moe/?keyword=20240290" target="_blank">萌ICP备20240290号</a>
-    </div>
-  </aside>
 
-  <button @click="scrollToTop" v-show="showBackToTop" class="mui-btn mui-btn--fab mui-btn--primary back-to-top" aria-label="回到顶部">
-    <i class="mdi mdi-arrow-up"></i>
-  </button>
-</div>
+    <script>
+      // 从后端获取视频文件列表数据
+      window.videoFiles = {{ video_files_json | safe }};
 
-<script>
-  window.videoFiles = {{ video_files_json | safe }};
-
-  new Vue({
-    el: '#app',
-    data: function() {
-      return {
-        files: window.videoFiles,
-        searchTerm: '',
-        isDarkMode: false,
-        utcTime: '',
-        currentVideoTitle: '',
-        showBackToTop: false,
-        isSidebarOpen: false,
-        displayedFiles: [],
-        pageSize: 10,
-        currentPage: 1,
-      };
-    },
-    computed: {
-      filteredFiles: function() {
-        var searchTerm = this.searchTerm.trim().toLowerCase();
-        return this.files.filter(function(file) {
-          return file.title.toLowerCase().indexOf(searchTerm) !== -1;
-        });
-      }
-    },
-    methods: {
-      searchVideos: function() {
-        this.currentPage = 1;
-        this.displayedFiles = [];
-        this.loadMoreVideos();
-      },
-      toggleDarkMode: function() {
-        this.isDarkMode = !this.isDarkMode;
-      },
-      updateUTCTime: function() {
-        var now = new Date();
-        this.utcTime = now.toUTCString();
-      },
-      scrollToTop: function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      },
-      handleScroll: function() {
-        this.showBackToTop = window.pageYOffset > 300;
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-          this.loadMoreVideos();
-        }
-      },
-      initDPlayers: function() {
-        var self = this;
-        this.$nextTick(function() {
-          self.displayedFiles.forEach(function(file, index) {
-            new DPlayer({
-              container: document.getElementById('dplayer-' + index),
-              video: {
-                url: file.path,
-                type: file.mimeType
+      new Vue({
+          el: '#app',
+          data: {
+              // 存储所有视频文件
+              files: window.videoFiles,
+              // 搜索关键词
+              searchTerm: '',
+              // 暗/亮模式状态
+              isDarkMode: false,
+              // 当前 UTC 时间
+              utcTime: '',
+              // 当前播放的视频标题
+              currentVideoTitle: '',
+              // 是否显示返回顶部按钮
+              showBackToTop: false,
+          },
+          computed: {
+              // 根据搜索关键词筛选视频文件
+              filteredFiles() {
+                  const searchTerm = this.searchTerm.trim().toLowerCase();
+                  return this.files.filter(file => file.title.toLowerCase().includes(searchTerm));
+              }
+          },
+          methods: {
+              // 搜索功能已通过计算属性实现
+              searchVideos() {
+                  // 搜索功能已通过计算属性实现
               },
-              preload: 'none'
-            });
-          });
-        });
-      },
-      setCurrentVideo: function(title) {
-        this.currentVideoTitle = title;
-      },
-      toggleSidebar: function() {
-        this.isSidebarOpen = !this.isSidebarOpen;
-        var sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('open');
-      },
-      loadMoreVideos: function() {
-        var start = (this.currentPage - 1) * this.pageSize;
-        var end = start + this.pageSize;
-        var newVideos = this.filteredFiles.slice(start, end);
-        this.displayedFiles = this.displayedFiles.concat(newVideos);
-        this.currentPage++;
-        this.initDPlayers();
-      }
-    },
-    mounted: function() {
-      this.updateUTCTime();
-      var self = this;
-      setInterval(function() {
-        self.updateUTCTime();
-      }, 1000);
-      window.addEventListener('scroll', this.handleScroll);
-      this.loadMoreVideos();
-    },
-    beforeDestroy: function() {
-      window.removeEventListener('scroll', this.handleScroll);
-    }
-  });
-</script>
-</body>
+              // 切换暗/亮模式
+              toggleDarkMode() {
+                  this.isDarkMode = !this.isDarkMode;
+              },
+              // 更新当前 UTC 时间
+              updateUTCTime() {
+                  const now = new Date();
+                  this.utcTime = now.toUTCString();
+              },
+              // 滚动到页面顶部
+              scrollToTop() {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+              },
+              // 监听滚动事件,显示/隐藏返回顶部按钮
+              handleScroll() {
+                  this.showBackToTop = window.pageYOffset > 300;
+              },
+              // 初始化 DPlayer 播放器
+              initDPlayers() {
+                  this.$nextTick(() => {
+                      this.files.forEach((file, index) => {
+                          new DPlayer({
+                              container: document.getElementById(`dplayer-${index}`),
+                              video: {
+                                  url: file.path,
+                                  type: file.mimeType
+                              },
+                              preload: 'none'
+                          });
+                      });
+                  });
+              },
+              // 设置当前播放的视频标题
+              setCurrentVideo(title) {
+                  this.currentVideoTitle = title;
+              }
+          },
+          mounted() {
+              // 在组件挂载完成后执行
+              this.updateUTCTime();
+              setInterval(this.updateUTCTime, 1000);
+
+              window.addEventListener('scroll', this.handleScroll);
+
+              this.initDPlayers();
+          },
+          beforeDestroy() {
+              // 在组件销毁前移除事件监听
+              window.removeEventListener('scroll', this.handleScroll);
+          }
+      });
+    </script>
+  </body>
 </html>
